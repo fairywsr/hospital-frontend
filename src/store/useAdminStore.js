@@ -1,5 +1,5 @@
 import { create } from "zustand";
 let abc;
-export const userUserStore = create((set, get) => {
+export const useAdminStore = create((set, get) => {
   return (abc, "I am user in store ");
 });
