@@ -1,13 +1,15 @@
 import axiosInstance from "../utils/axios";
 
-export const usePatientStore = create((set) => ({
+export const usePatientStore = create((set, get) => ({
   user: null,
+  patients: [],
   error: null,
   loading: false,
 
   register: async (userData) => {
     try {
       set({ loading: true, error: null });
+
       const { data } = await axiosInstance.post(
         "patient/register-patient",
         userData,
@@ -17,7 +19,7 @@ export const usePatientStore = create((set) => ({
       return data;
     } catch (error) {
       set({
-        error: error?.response?.data?.message || "Registeration Failed",
+        error: error?.response?.data?.message || "Registration Failed",
         loading: false,
       });
       throw error;
@@ -26,147 +28,167 @@ export const usePatientStore = create((set) => ({
 
   login: async (userData) => {
     try {
-      set({
-        error: null,
-        loading: true,
-      });
+      set({ loading: true, error: null });
 
       const { data } = await axiosInstance.post(
         "patient/patient-login",
         userData,
       );
-      set({ loading: false, user: data.user });
+
+      set({ user: data.user, loading: false });
       return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Login Failed",
         loading: false,
       });
+      throw error;
     }
   },
 
-  resetPasswordRequest: async () => {
+  resetPasswordRequest: async (userData) => {
     try {
       set({ loading: true, error: null });
+
       const { data } = await axiosInstance.put(
         "patient/reset-password-request",
-        userDate,
+        userData,
       );
+
       set({ loading: false });
       return data;
     } catch (error) {
       set({
         error:
-          error?.response?.data?.message || "error in password reset request",
+          error?.response?.data?.message || "Password reset request failed",
+        loading: false,
       });
+      throw error;
     }
   },
 
-  resetPassword: async () => {
+  resetPassword: async (token, userData) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
-      const data = await axiosInstance.put(
-        `patient-reset-password${token}`,
+      set({ loading: true, error: null });
+
+      const { data } = await axiosInstance.put(
+        `patient/reset-password/${token}`,
         userData,
       );
 
-      set({
-        loading: false,
-      });
+      set({ loading: false });
       return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Password not reset",
+        loading: false,
       });
+      throw error;
     }
   },
 
-  updatePassword: async () => {
+  updatePassword: async (userData) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
-      const { data } = await axiosInstance.put(`patient-update-password`);
-      set({
-        loading: false,
-      });
+      set({ loading: true, error: null });
 
+      const { data } = await axiosInstance.put(
+        "patient/update-password",
+        userData,
+      );
+
+      set({ loading: false });
       return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Password not updated",
+        loading: false,
       });
+      throw error;
     }
   },
 
-  patientProfile: async () => {
+  patientProfile: async (id) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
+      set({ loading: true, error: null });
 
-      const { data } = await axiosInstance.get("/patient/patient/", id);
-      set({
-        loading: false,
-        user: data.user,
-      });
+      const { data } = await axiosInstance.get(`patient/patient/${id}`);
+
+      set({ loading: false, user: data.user });
       return data;
     } catch (error) {
       set({
-        error: error?.response?.Dat?.message || "Profile not found",
+        error: error?.response?.data?.message || "Profile not found",
         loading: false,
       });
+      throw error;
     }
   },
 
-  updateProfile: async () => {
+  updateProfile: async (id, userData) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
+      set({ loading: true, error: null });
 
       const { data } = await axiosInstance.put(
         `patient/update-profile/${id}`,
         userData,
       );
-      set({
-        loading: false,
-        user: data.user,
-      });
+
+      set({ loading: false, user: data.user });
       return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Profile not updated",
         loading: false,
       });
+      throw error;
     }
   },
 
-  deleteProfile: async () => {
+  deleteProfile: async (id) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
+      set({ loading: true, error: null });
 
       const { data } = await axiosInstance.delete(
-        `patient/delete-profile${id}`,
+        `patient/delete-profile/${id}`,
       );
-      set({
-        loading: false,
-      });
+
+      set({ loading: false, user: null });
       return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Profile not deleted",
         loading: false,
       });
+      throw error;
+    }
+  },
+
+  // Only Doctor should access this API
+  getAllPatients: async () => {
+    try {
+      if (get().user?.role !== "Doctor") {
+        throw new Error("Only doctors can access all patients");
+      }
+
+      set({ loading: true, error: null });
+
+      const { data } = await axiosInstance.get("patient/all-patients");
+
+      set({
+        patients: data.patients,
+        loading: false,
+      });
+
+      return data;
+    } catch (error) {
+      set({
+        error:
+          error?.response?.data?.message ||
+          error.message ||
+          "Failed to fetch patients",
+        loading: false,
+      });
+      throw error;
     }
   },
 }));
