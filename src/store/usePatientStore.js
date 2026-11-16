@@ -163,7 +163,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // Only Doctor should access this API
+  // Api for Doctor -- all-patients
   getAllPatients: async () => {
     try {
       if (get().user?.role !== "Doctor") {
