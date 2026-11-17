@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axiosInstance from "../utils/axios";
+import { useAuthStore } from "./useAuthStore";
 
 export const useAdminStore = create((set) => ({
   doctor: null,
@@ -33,6 +34,11 @@ export const useAdminStore = create((set) => ({
       const { data } = await axiosInstance.post("admin/login", adminData);
 
       set({ loading: false, admin: data.admin });
+
+      useAuthStore.getState().setUser({
+        ...data.admin,
+        role: "Admin",
+      });
       return data;
     } catch (error) {
       set({

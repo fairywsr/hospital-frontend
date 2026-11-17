@@ -1,4 +1,5 @@
 import axiosInstance from "../utils/axios";
+import { useAuthStore } from "./useAuthStore";
 
 export const useDoctorStore = create((set, get) => ({
   allDoctors: [],
@@ -38,6 +39,11 @@ export const useDoctorStore = create((set, get) => ({
       set({
         loading: false,
         doctor: data.doctor,
+      });
+
+      useAuthStore.getState().setUser({
+        ...data.doctor,
+        role: "Doctor",
       });
       return data;
     } catch (error) {
