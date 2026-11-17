@@ -1,6 +1,7 @@
 import axiosInstance from "../utils/axios";
 
 export const useDoctorStore = create((set, get) => ({
+  allDoctors: [],
   doctor: null,
   loading: false,
   error: null,
@@ -109,6 +110,7 @@ export const useDoctorStore = create((set, get) => ({
         doctorData,
       );
       set({ loading: false, doctor: data?.doctor });
+      return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "failed to reset Password",
@@ -126,6 +128,7 @@ export const useDoctorStore = create((set, get) => ({
         doctorData,
       );
       set({ loading: false, doctor: data?.doctor });
+      return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "failed to reset password",
@@ -135,6 +138,51 @@ export const useDoctorStore = create((set, get) => ({
     }
   },
 
+  updatePassword: async (id, doctorData) => {
+    try {
+      set({
+        loading: true,
+        error: null,
+      });
+      const { data } = axiosInstance.post(
+        `doctor/update-password${id}`,
+        doctorData,
+      );
+      set({
+        loading: false,
+        doctor: data?.doctor,
+      });
+      return data;
+    } catch (error) {
+      set({
+        error: error?.response?.data?.message || "failed to fetc profile",
+        loading: false,
+      });
+      throw error;
+    }
+  },
+
   //   doctor api for admin all-doctor
-  allDoctors: async () => {},
+  getAllDoctors: async () => {
+    try {
+      if (get().doctor?.role !== "Doctor") {
+        throw new Error("You are not allowed to acces this api");
+      }
+      set({
+        loading: true,
+        error: null,
+      });
+      const { data } = axiosInstance.get("doctors-all-doctors");
+      set({
+        loading: false,
+        allDoctors: data,
+      });
+    } catch (error) {
+      set({
+        error: error?.response?.data?.message || "failed to fetched doctors",
+        loading: false,
+      });
+      throw error;
+    }
+  },
 }));
