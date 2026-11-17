@@ -1,20 +1,21 @@
+import { create } from "zustand";
 import axiosInstance from "../utils/axios";
-// approve reject all doctors, apis from doctor controller handle here
-export const useAdminStore = create((set, get) => ({
+
+export const useAdminStore = create((set) => ({
   doctor: null,
+  doctors: [],
   admin: null,
-  loading: null,
-  allDoctors: [],
+  loading: false,
   error: null,
 
-  registerAdmin: async (admindata) => {
+  // Register Admin
+  registerAdmin: async (adminData) => {
     try {
       set({ loading: true, error: null });
-      const { data } = await axiosInstance.post("admin/register", admindata);
-      set({
-        loading: false,
-        admin: data.admin,
-      });
+
+      const { data } = await axiosInstance.post("admin/register", adminData);
+
+      set({ loading: false, admin: data.admin });
       return data;
     } catch (error) {
       set({
@@ -24,13 +25,13 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
-  loginAdmin: async (admindata) => {
+  // Login Admin
+  loginAdmin: async (adminData) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
-      const { data } = axiosInstance.post("admin/login", admindata);
+      set({ loading: true, error: null });
+
+      const { data } = await axiosInstance.post("admin/login", adminData);
+
       set({ loading: false, admin: data.admin });
       return data;
     } catch (error) {
@@ -41,10 +42,13 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // Logout Admin
   logOutAdmin: async () => {
     try {
       set({ loading: true, error: null });
+
       const { data } = await axiosInstance.post("admin/logout");
+
       set({ loading: false, admin: null });
       return data;
     } catch (error) {
@@ -55,17 +59,14 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // Admin Profile
   adminProfile: async (id) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
+      set({ loading: true, error: null });
+
       const { data } = await axiosInstance.get(`admin/profile/${id}`);
-      set({
-        loading: false,
-        admin: data.admin,
-      });
+
+      set({ loading: false, admin: data.admin });
       return data;
     } catch (error) {
       set({
@@ -75,33 +76,38 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // Update Password
   updatePassword: async (adminData) => {
     try {
       set({ loading: true, error: null });
+
       const { data } = await axiosInstance.put(
         "admin/update-password",
         adminData,
       );
-      set({
-        loading: false,
-        admin: data.admin,
-      });
+
+      set({ loading: false, admin: data.admin });
+      return data;
     } catch (error) {
       set({
-        error: error?.response?.data?.message || "Failed to reset Password",
+        error: error?.response?.data?.message || "Failed to reset password",
         loading: false,
       });
     }
   },
 
+  // Update Profile
   updateProfile: async (id, adminData) => {
     try {
       set({ loading: true, error: null });
-      const { data } = axiosInstance.put(
-        `admin/update-profile${id}`,
+
+      const { data } = await axiosInstance.put(
+        `admin/update-profile/${id}`,
         adminData,
       );
+
       set({ loading: false, admin: data.admin });
+      return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Failed to update profile",
@@ -110,16 +116,15 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // Delete Profile
   deleteProfile: async (id) => {
     try {
       set({ loading: true, error: null });
-      const axiosInstance = await axiosInstance.delete(
-        `/admin/profile-delete${id}`,
-      );
-      set({
-        loading: false,
-        admin: null,
-      });
+
+      const { data } = await axiosInstance.delete(`admin/profile-delete/${id}`);
+
+      set({ loading: false, admin: null });
+      return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Failed to delete profile",
@@ -128,21 +133,17 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // Reset Password Request
   resetPasswordRequest: async (adminData) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
-      const { data } = axiosInstance.post(
+      set({ loading: true, error: null });
+
+      const { data } = await axiosInstance.post(
         "admin/reset-password-request",
         adminData,
       );
-      set({
-        loading: false,
-        admin: data.admin,
-      });
 
+      set({ loading: false });
       return data;
     } catch (error) {
       set({
@@ -152,13 +153,18 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // Reset Password
   resetPassword: async (token, adminData) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
-      const { data } = await axiosInstance.put(`admin/reset-password/${token}`);
+      set({ loading: true, error: null });
+
+      const { data } = await axiosInstance.put(
+        `admin/reset-password/${token}`,
+        adminData,
+      );
+
+      set({ loading: false });
+      return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Failed to reset password",
@@ -167,13 +173,16 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // Approve Doctor
   approveDoctor: async (id, profileStatus) => {
     try {
       set({ loading: true, error: null });
-      const { data } = axiosInstance.put(
-        `doctor/approve-doctor${id}`,
+
+      const { data } = await axiosInstance.put(
+        `doctor/approve-doctor/${id}`,
         profileStatus,
       );
+
       set({ loading: false, doctor: data.doctor });
       return data;
     } catch (error) {
@@ -184,20 +193,17 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // Reject Doctor
   rejectDoctor: async (id, profileStatus) => {
     try {
-      set({
-        loading: true,
-        error: null,
-      });
+      set({ loading: true, error: null });
+
       const { data } = await axiosInstance.put(
-        `doctor/pending-status${id}`,
+        `doctor/pending-status/${id}`,
         profileStatus,
       );
-      set({
-        loading: false,
-        doctor: data.doctor,
-      });
+
+      set({ loading: false, doctor: data.doctor });
       return data;
     } catch (error) {
       set({
@@ -207,15 +213,18 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
+  // All Pending Doctors
   allPendingDoctors: async () => {
     try {
       set({ loading: true, error: null });
-      const { data } = await axiosInstance.get(`doctor/pending-status`);
-      set({ loading: false, doctor: data.doctor });
+
+      const { data } = await axiosInstance.get("doctor/pending-status");
+
+      set({ loading: false, doctors: data.doctors });
       return data;
     } catch (error) {
       set({
-        error: error?.response?.data?.message || "Failed to fetched doctors",
+        error: error?.response?.data?.message || "Failed to fetch doctors",
         loading: false,
       });
     }
