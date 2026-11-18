@@ -1,10 +1,15 @@
-import Header from "./components/Header";
-import { userUserStore } from "./store/useAdminStore";
+import { Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
 
 function App() {
-  const user = userUserStore();
-  console.log(user, "12");
-  return <Header />;
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
+      </Route>
+    </Routes>
+  );
 }
 
 export default App;
