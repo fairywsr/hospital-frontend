@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axiosInstance from "../utils/axios";
 import { useAuthStore } from "./useAuthStore";
 
-const role = useAuthStore.getState().user?.role;
+const getRole = () => useAuthStore.getState().user?.role;
 export const useAppointmentStore = create((set, get) => ({
   appointments: [],
   error: null,
@@ -10,7 +10,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   createNewAppointment: async (appointmentData) => {
     try {
-      if (role !== "Patient") {
+      if (getRole() !== "Patient") {
         throw new Error("You are not allowed to acces this api");
       }
       set({ loading: true, error: null });
@@ -34,7 +34,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   getPatientAppointment: async () => {
     try {
-      if (role !== "Patient") {
+      if (getRole() !== "Patient") {
         throw new Error("You are not allowed to acces this api");
       }
       set({ loading: true, error: null });
@@ -51,7 +51,7 @@ export const useAppointmentStore = create((set, get) => ({
   },
 
   getDoctorAppointment: async () => {
-    if (role !== "Doctor") {
+    if (getRole() !== "Doctor") {
       throw new Error("You are not allowed to acces this api");
     }
     try {
@@ -72,7 +72,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   approveAppointmentStatus: async (id) => {
     try {
-      if (role !== "Doctor") {
+      if (getRole() !== "Doctor") {
         throw new Error("You are not allowed to acces this api");
       }
       set({
@@ -95,7 +95,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   rejectAppointmentStatus: async (id) => {
     try {
-      if (role !== "Doctor") {
+      if (getRole() !== "Doctor") {
         throw new Error("You are not allowed to acces this api");
       }
       set({ loading: true, error: null });
@@ -115,7 +115,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   cancelAppointment: async (id) => {
     try {
-      if (role !== "Doctor") {
+      if (getRole() !== "Doctor") {
         throw new Error("You are not allowed to acces this api");
       }
       set({ loading: false, error: null });
@@ -137,7 +137,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   allAppointments: async () => {
     try {
-      if (role !== "Admin") {
+      if (getRole() !== "Admin") {
         throw new Error("You are not allowed to acces this api");
       }
       set({
@@ -160,7 +160,7 @@ export const useAppointmentStore = create((set, get) => ({
   },
 
   appointmentDetail: async (id) => {
-    if (role !== "Admin") {
+    if (getRole() !== "Admin") {
       throw new Error("You are not allowed to acces this api");
     }
     try {
@@ -187,7 +187,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   appointmentStatus: async (appointmentStatus) => {
     try {
-      if (role !== "Admin") {
+      if (getRole() !== "Admin") {
         throw new Error("You are not allowed to acces this api");
       }
       set({
@@ -214,7 +214,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   updateAppointmentStatus: async (id, appointmentStatus) => {
     try {
-      if (role !== "Admin") {
+      if (getRole() !== "Admin") {
         throw new Error("You are not allowed to acces this api");
       }
       set({ loading: true, error: null });
@@ -239,7 +239,7 @@ export const useAppointmentStore = create((set, get) => ({
 
   deleteAppointment: async (id) => {
     try {
-      if (role !== "Admin") {
+      if (getRole() !== "Admin") {
         throw new Error("You are not allowed to acces this api");
       }
       set({
