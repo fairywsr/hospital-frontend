@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 
@@ -9,7 +8,7 @@ export function PatientLayout() {
 
   const handleLogout = () => {
     clearUser();
-    navigate("/login");
+    navigate("/patient/login");
   };
 
   const navItems = [

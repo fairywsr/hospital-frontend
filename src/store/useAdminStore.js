@@ -16,13 +16,15 @@ export const useAdminStore = create((set) => ({
 
       const { data } = await axiosInstance.post("admin/register", adminData);
 
-      set({ loading: false, admin: data.admin });
+      const adminUser = data.admin || data.user;
+      set({ loading: false, admin: adminUser });
       return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Failed to register admin",
         loading: false,
       });
+      throw error;
     }
   },
 
@@ -33,10 +35,11 @@ export const useAdminStore = create((set) => ({
 
       const { data } = await axiosInstance.post("admin/login", adminData);
 
-      set({ loading: false, admin: data.admin });
+      const adminUser = data.admin || data.user;
+      set({ loading: false, admin: adminUser });
 
       useAuthStore.getState().setUser({
-        ...data.admin,
+        ...adminUser,
         role: "Admin",
       });
       return data;
@@ -45,6 +48,7 @@ export const useAdminStore = create((set) => ({
         error: error?.response?.data?.message || "Failed to login admin",
         loading: false,
       });
+      throw error;
     }
   },
 

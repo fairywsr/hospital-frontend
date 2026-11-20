@@ -9,7 +9,7 @@ export function DoctorLayout() {
 
   const handleLogout = () => {
     clearUser();
-    navigate("/login");
+    navigate("/doctor/login");
   };
 
   const navItems = [

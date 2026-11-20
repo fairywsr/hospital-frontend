@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 
 function Home() {
@@ -346,9 +347,12 @@ function Home() {
               </div>
 
               <div className="mt-5 pt-4 border-t border-slate-100">
-                <button className="w-full py-2 px-3 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white transition-colors">
+                <Link
+                  to="/patient/book-appointment"
+                  className="w-full block text-center py-2 px-3 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white transition-colors"
+                >
                   Book Consultation
-                </button>
+                </Link>
               </div>
             </div>
           ))}
@@ -369,9 +373,12 @@ function Home() {
               Skip hospital queues. Choose your specialist, pick a convenient time slot, and get your consultation confirmed instantly.
             </p>
             <div className="pt-3 flex flex-col sm:flex-row gap-4">
-              <button className="bg-white text-blue-700 hover:bg-blue-50 font-bold px-6 py-3.5 rounded-xl shadow-lg transition-colors">
+              <Link
+                to="/patient/book-appointment"
+                className="bg-white text-blue-700 hover:bg-blue-50 font-bold px-6 py-3.5 rounded-xl shadow-lg transition-colors text-center inline-block"
+              >
                 Book An Appointment
-              </button>
+              </Link>
               <button className="border border-white/30 hover:bg-white/10 text-white font-semibold px-6 py-3.5 rounded-xl transition-colors">
                 Contact Hospital Desk
               </button>

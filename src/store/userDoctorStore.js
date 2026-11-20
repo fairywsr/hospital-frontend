@@ -12,14 +12,14 @@ export const useDoctorStore = create((set, get) => ({
     try {
       set({ loading: true, error: null });
       const { data } = await axiosInstance.post(
-        "/doctor/register-doctor",
+        "doctor/register-doctor",
         doctorData,
       );
-      set({ loading: true });
+      set({ loading: false, doctor: data.doctor || data.user });
       return data;
     } catch (error) {
       set({
-        error: error?.response?.data?.message || "registeration failed",
+        error: error?.response?.data?.message || "Registration failed",
         loading: false,
       });
       throw error;
@@ -34,16 +34,17 @@ export const useDoctorStore = create((set, get) => ({
       });
 
       const { data } = await axiosInstance.post(
-        "/doctor/doctor/login",
+        "doctor/login",
         doctorData,
       );
+      const doctorUser = data.doctor || data.user;
       set({
         loading: false,
-        doctor: data.doctor,
+        doctor: doctorUser,
       });
 
       useAuthStore.getState().setUser({
-        ...data.doctor,
+        ...doctorUser,
         role: "Doctor",
       });
       return data;
@@ -74,17 +75,17 @@ export const useDoctorStore = create((set, get) => ({
 
   editProfile: async (id, doctorData) => {
     try {
-      set({ loading: false, error: null });
+      set({ loading: true, error: null });
 
-      const { data } = axiosInstance.put(
-        `/doctor/update-profile/${id}`,
+      const { data } = await axiosInstance.put(
+        `doctor/update-profile/${id}`,
         doctorData,
       );
-      set({ loading: false, doctor: data.doctor });
+      set({ loading: false, doctor: data.doctor || data.user });
       return data;
     } catch (error) {
       set({
-        error: error?.response?.data?.message || "failed to fetc profile",
+        error: error?.response?.data?.message || "failed to fetch profile",
         loading: false,
       });
       throw error;
@@ -94,10 +95,10 @@ export const useDoctorStore = create((set, get) => ({
   deleteProfile: async (id) => {
     try {
       set({ loading: true, error: null });
-      const { data } = axiosInstance.delete(`doctor/delete-profile/${id}`);
+      const { data } = await axiosInstance.delete(`doctor/delete-profile/${id}`);
       set({
         loading: false,
-        doctor: data.doctor,
+        doctor: data.doctor || data.user,
       });
       return data;
     } catch (error) {
@@ -127,7 +128,7 @@ export const useDoctorStore = create((set, get) => ({
     }
   },
 
-  resetPassword: async (id, token) => {
+  resetPassword: async (id, token, doctorData) => {
     try {
       set({ loading: true, error: null });
       const { data } = axiosInstance.post(

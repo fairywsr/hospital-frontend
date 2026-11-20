@@ -1,4 +1,3 @@
-import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 
@@ -12,9 +11,18 @@ export function ProtectedRoute({ allowedRoles = [] }) {
   const user = useAuthStore((state) => state.user);
   const location = useLocation();
 
-  // 1. Not authenticated -> Redirect to login page
+  // 1. Not authenticated -> Redirect to dedicated login page based on target path or role
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    let targetLogin = "/patient/login";
+    if (location.pathname.startsWith("/admin") || allowedRoles.includes("Admin")) {
+      targetLogin = "/admin/login";
+    } else if (location.pathname.startsWith("/doctor") || allowedRoles.includes("Doctor")) {
+      targetLogin = "/doctor/login";
+    } else if (location.pathname.startsWith("/patient") || allowedRoles.includes("Patient")) {
+      targetLogin = "/patient/login";
+    }
+
+    return <Navigate to={targetLogin} state={{ from: location }} replace />;
   }
 
   // 2. Role not authorized -> Redirect to unauthorized page

@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 
 export function AdminLayout() {
@@ -8,7 +8,7 @@ export function AdminLayout() {
 
   const handleLogout = () => {
     clearUser();
-    navigate("/login");
+    navigate("/admin/login");
   };
 
   const navItems = [

@@ -39,7 +39,7 @@ export const usePatientStore = create((set, get) => ({
 
       set({ user: data.user, loading: false });
       useAuthStore.getState().setUser({
-        ...data.patient,
+        ...(data.patient || data.user),
         role: "Patient",
       });
       return data;
