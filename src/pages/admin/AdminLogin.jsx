@@ -95,9 +95,9 @@ function AdminLogin() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-xs font-semibold text-slate-300">Password</label>
-              <a href="#" className="text-xs text-purple-400 hover:underline">
+              <Link to="/admin/forgot-password" className="text-xs text-purple-400 hover:underline">
                 Forgot password?
-              </a>
+              </Link>
             </div>
             <div className="relative">
               <input

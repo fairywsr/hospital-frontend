@@ -60,12 +60,12 @@ export const useAdminStore = create((set) => ({
       const { data } = await axiosInstance.post("admin/logout");
 
       set({ loading: false, admin: null });
+      useAuthStore.getState().clearUser();
       return data;
     } catch (error) {
-      set({
-        error: error?.response?.data?.message || "Failed to admin logout",
-        loading: false,
-      });
+      // Clear client-side state even if server call fails
+      set({ admin: null, loading: false, error: error?.response?.data?.message || "Failed to admin logout" });
+      useAuthStore.getState().clearUser();
     }
   },
 
@@ -76,7 +76,9 @@ export const useAdminStore = create((set) => ({
 
       const { data } = await axiosInstance.get(`admin/profile/${id}`);
 
-      set({ loading: false, admin: data.admin });
+      // Controller returns key "profile"
+      const adminUser = data.profile || data.admin;
+      set({ loading: false, admin: adminUser });
       return data;
     } catch (error) {
       set({

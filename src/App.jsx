@@ -12,6 +12,8 @@ import DoctorLogin from "./pages/doctor/DoctorLogin";
 import DoctorRegister from "./pages/doctor/DoctorRegister";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminRegister from "./pages/admin/AdminRegister";
+import AdminForgotPassword from "./pages/admin/AdminForgotPassword";
+import AdminResetPassword from "./pages/admin/AdminResetPassword";
 
 // Routing Guards
 import ProtectedRoute from "./components/routing/ProtectedRoute";
@@ -61,6 +63,8 @@ function App() {
           {/* Dedicated Separate Admin Auth Views */}
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/register" element={<AdminRegister />} />
+          <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
+          <Route path="/admin/reset-password/:token" element={<AdminResetPassword />} />
           <Route path="/login/admin" element={<Navigate to="/admin/login" replace />} />
           <Route path="/register/admin" element={<Navigate to="/admin/register" replace />} />
         </Route>

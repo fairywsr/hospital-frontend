@@ -1,13 +1,14 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useAdminStore } from "../../store/useAdminStore";
 
 export function AdminLayout() {
   const user = useAuthStore((state) => state.user);
-  const clearUser = useAuthStore((state) => state.clearUser);
+  const logOutAdmin = useAdminStore((state) => state.logOutAdmin);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    clearUser();
+  const handleLogout = async () => {
+    await logOutAdmin();
     navigate("/admin/login");
   };
 
