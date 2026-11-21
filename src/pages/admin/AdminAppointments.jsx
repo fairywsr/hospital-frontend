@@ -15,8 +15,8 @@ const PAYMENT_COLORS = {
   Refunded: "text-blue-600",
 };
 
-const ALL_STATUSES = ["All", "Pending", "Approved", "Rejected", "Cancelled", "Completed"];
-const STATUS_OPTIONS = ["Pending", "Approved", "Rejected", "Cancelled", "Completed"];
+const ALL_STATUSES = ["All", "Pending", "Approve", "Reject", "Cancel"];
+const STATUS_OPTIONS = ["Pending", "Approve", "Reject", "Cancel"];
 
 function AdminAppointments() {
   const {
