@@ -26,11 +26,15 @@ import AdminLayout from "./components/layouts/AdminLayout";
 
 // Role-Specific Pages
 import PatientDashboard from "./pages/patient/PatientDashboard";
+import PatientAppointments from "./pages/patient/PatientAppointments";
+import BookAppointment from "./pages/patient/BookAppointment";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
+import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
 import DoctorForgotPassword from "./pages/doctor/DoctorForgotPassword";
 import DoctorResetPassword from "./pages/doctor/DoctorResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminAppointments from "./pages/admin/AdminAppointments";
 
 function App() {
   return (
@@ -75,8 +79,8 @@ function App() {
         <Route path="/patient" element={<PatientLayout />}>
           <Route index element={<Navigate to="/patient/dashboard" replace />} />
           <Route path="dashboard" element={<PatientDashboard />} />
-          <Route path="book-appointment" element={<PatientDashboard />} />
-          <Route path="appointments" element={<PatientDashboard />} />
+          <Route path="book-appointment" element={<BookAppointment />} />
+          <Route path="appointments" element={<PatientAppointments />} />
           <Route path="profile" element={<PatientDashboard />} />
         </Route>
       </Route>
@@ -86,7 +90,7 @@ function App() {
         <Route path="/doctor" element={<DoctorLayout />}>
           <Route index element={<Navigate to="/doctor/dashboard" replace />} />
           <Route path="dashboard" element={<DoctorDashboard />} />
-          <Route path="appointments" element={<DoctorDashboard />} />
+          <Route path="appointments" element={<DoctorAppointments />} />
           <Route path="patients" element={<DoctorDashboard />} />
           <Route path="schedule" element={<DoctorDashboard />} />
           <Route path="profile" element={<DoctorProfile />} />
@@ -101,7 +105,7 @@ function App() {
           <Route path="pending-doctors" element={<AdminDashboard />} />
           <Route path="doctors" element={<AdminDashboard />} />
           <Route path="patients" element={<AdminDashboard />} />
-          <Route path="appointments" element={<AdminDashboard />} />
+          <Route path="appointments" element={<AdminAppointments />} />
           <Route path="settings" element={<AdminDashboard />} />
         </Route>
       </Route>

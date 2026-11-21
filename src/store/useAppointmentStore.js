@@ -3,25 +3,33 @@ import axiosInstance from "../utils/axios";
 import { useAuthStore } from "./useAuthStore";
 
 const getRole = () => useAuthStore.getState().user?.role;
-export const useAppointmentStore = create((set, get) => ({
+
+export const useAppointmentStore = create((set) => ({
   appointments: [],
+  appointment: null,
   error: null,
   loading: false,
 
+  // ── Patient: Create Appointment ───────────────────────────────────────────────
+  // POST /appointments/new-appointment
+  // Body: { doctor, appointmentDate, reason }
   createNewAppointment: async (appointmentData) => {
     try {
       if (getRole() !== "Patient") {
-        throw new Error("You are not allowed to acces this api");
+        throw new Error("You are not allowed to access this api");
       }
       set({ loading: true, error: null });
       const { data } = await axiosInstance.post(
-        `appointments/new-appointment`,
+        "appointments/new-appointment",
         appointmentData,
       );
-      set({
+      // Append the new appointment to the existing list
+      set((state) => ({
         loading: false,
-        appointments: data.appointments,
-      });
+        appointments: state.appointments
+          ? [data.appointment, ...state.appointments]
+          : [data.appointment],
+      }));
       return data;
     } catch (error) {
       set({
@@ -32,147 +40,157 @@ export const useAppointmentStore = create((set, get) => ({
     }
   },
 
+  // ── Patient: Get My Appointments ──────────────────────────────────────────────
+  // GET /appointments/all-appointments
   getPatientAppointment: async () => {
     try {
       if (getRole() !== "Patient") {
-        throw new Error("You are not allowed to acces this api");
+        throw new Error("You are not allowed to access this api");
       }
       set({ loading: true, error: null });
-      const { data } = await axiosInstance.get(`appointments/all-appointments`);
+      const { data } = await axiosInstance.get("appointments/all-appointments");
       set({ loading: false, appointments: data.appointments });
       return data;
     } catch (error) {
       set({
-        error: error?.response?.data?.message || "Failed to fetch appointment",
+        error: error?.response?.data?.message || "Failed to fetch appointments",
         loading: false,
       });
       throw error;
     }
   },
 
+  // ── Doctor: Get My Appointments ────────────────────────────────────────────────
+  // GET /appointments/doctor-appointments
   getDoctorAppointment: async () => {
-    if (getRole() !== "Doctor") {
-      throw new Error("You are not allowed to acces this api");
-    }
     try {
+      if (getRole() !== "Doctor") {
+        throw new Error("You are not allowed to access this api");
+      }
       set({ loading: true, error: null });
       const { data } = await axiosInstance.get(
-        `appointments/doctor-appointments`,
+        "appointments/doctor-appointments",
       );
       set({ loading: false, appointments: data.appointments });
       return data;
     } catch (error) {
       set({
-        error: error?.response?.data?.message || "Failed to register admin",
+        error: error?.response?.data?.message || "Failed to fetch appointments",
         loading: false,
       });
       throw error;
     }
   },
 
+  // ── Doctor: Approve Appointment ────────────────────────────────────────────────
+  // PUT /appointments/approve/:id
   approveAppointmentStatus: async (id) => {
     try {
       if (getRole() !== "Doctor") {
-        throw new Error("You are not allowed to acces this api");
-      }
-      set({
-        loading: true,
-        error: null,
-      });
-
-      const { data } = await axiosInstance.put(`appointments/approve/${id}`);
-      set({ loading: false, appointments: data.appointment });
-    } catch (error) {
-      set({
-        error:
-          error?.response?.data?.message ||
-          "Failed to update appointment status",
-        loading: false,
-      });
-      throw error;
-    }
-  },
-
-  rejectAppointmentStatus: async (id) => {
-    try {
-      if (getRole() !== "Doctor") {
-        throw new Error("You are not allowed to acces this api");
+        throw new Error("You are not allowed to access this api");
       }
       set({ loading: true, error: null });
-      const { data } = await axiosInstance.put(`appointments/reject/${id}`);
-      set({ loading: false, appointment: data.appointment });
+      const { data } = await axiosInstance.put(`appointments/approve/${id}`);
+      set((state) => ({
+        loading: false,
+        appointments: state.appointments.map((a) =>
+          a._id === id ? { ...a, status: "Approved" } : a,
+        ),
+      }));
       return data;
     } catch (error) {
       set({
         error:
-          error?.response?.data?.message ||
-          "Failed to update appointment status",
+          error?.response?.data?.message || "Failed to approve appointment",
         loading: false,
       });
       throw error;
     }
   },
 
-  cancelAppointment: async (id) => {
+  // ── Doctor: Reject Appointment ─────────────────────────────────────────────────
+  // PUT /appointments/reject/:id
+  rejectAppointmentStatus: async (id) => {
     try {
       if (getRole() !== "Doctor") {
-        throw new Error("You are not allowed to acces this api");
+        throw new Error("You are not allowed to access this api");
       }
-      set({ loading: false, error: null });
-      const { data } = await axiosInstance.put(`appointment/cancel/${id}`);
-      set({
+      set({ loading: true, error: null });
+      const { data } = await axiosInstance.put(`appointments/reject/${id}`);
+      set((state) => ({
         loading: false,
-        appointments: data.appointment,
-      });
+        appointments: state.appointments.map((a) =>
+          a._id === id ? { ...a, status: "Rejected" } : a,
+        ),
+      }));
+      return data;
     } catch (error) {
       set({
         error:
-          error?.response?.data?.message ||
-          "Failed to update appointment status",
+          error?.response?.data?.message || "Failed to reject appointment",
         loading: false,
       });
       throw error;
     }
   },
 
+  // ── Doctor/Patient: Cancel Appointment ────────────────────────────────────────
+  // PUT /appointments/cancel/:id
+  cancelAppointment: async (id) => {
+    try {
+      const role = getRole();
+      if (role !== "Doctor" && role !== "Patient") {
+        throw new Error("You are not allowed to access this api");
+      }
+      set({ loading: true, error: null });
+      const { data } = await axiosInstance.put(`appointments/cancel/${id}`);
+      set((state) => ({
+        loading: false,
+        appointments: state.appointments.map((a) =>
+          a._id === id ? { ...a, status: "Cancelled" } : a,
+        ),
+      }));
+      return data;
+    } catch (error) {
+      set({
+        error:
+          error?.response?.data?.message || "Failed to cancel appointment",
+        loading: false,
+      });
+      throw error;
+    }
+  },
+
+  // ── Admin: Get All Appointments ────────────────────────────────────────────────
+  // GET /appointments/all
   allAppointments: async () => {
     try {
       if (getRole() !== "Admin") {
-        throw new Error("You are not allowed to acces this api");
+        throw new Error("You are not allowed to access this api");
       }
-      set({
-        loading: true,
-        error: null,
-      });
-      const { data } = await axiosInstance.get(`appointments/all`);
-      set({
-        loading: false,
-        appointments: data.appointments,
-      });
+      set({ loading: true, error: null });
+      const { data } = await axiosInstance.get("appointments/all");
+      set({ loading: false, appointments: data.allAppointments });
+      return data;
     } catch (error) {
       set({
-        error:
-          error?.response?.data?.message || "Failed to  fetch appointments",
+        error: error?.response?.data?.message || "Failed to fetch appointments",
         loading: false,
       });
       throw error;
     }
   },
 
+  // ── Admin: Appointment Detail ──────────────────────────────────────────────────
+  // GET /appointments/:id
   appointmentDetail: async (id) => {
-    if (getRole() !== "Admin") {
-      throw new Error("You are not allowed to acces this api");
-    }
     try {
-      set({
-        loading: true,
-        error: null,
-      });
-      const { data } = await axiosInstance.get(`/appointments/${id}`);
-      set({
-        loading: false,
-        appointments: data.appointment,
-      });
+      if (getRole() !== "Admin") {
+        throw new Error("You are not allowed to access this api");
+      }
+      set({ loading: true, error: null });
+      const { data } = await axiosInstance.get(`appointments/${id}`);
+      set({ loading: false, appointment: data.appointment });
       return data;
     } catch (error) {
       set({
@@ -185,47 +203,49 @@ export const useAppointmentStore = create((set, get) => ({
     }
   },
 
-  appointmentStatus: async (appointmentStatus) => {
+  // ── Admin: Get Appointments By Status ─────────────────────────────────────────
+  // GET /appointments/status/:status
+  appointmentByStatus: async (status) => {
     try {
       if (getRole() !== "Admin") {
-        throw new Error("You are not allowed to acces this api");
+        throw new Error("You are not allowed to access this api");
       }
-      set({
-        loading: true,
-        error: null,
-      });
-      const { data } = axiosInstance.get(
-        `appointments/status/${appointmentStatus}`,
+      set({ loading: true, error: null });
+      const { data } = await axiosInstance.get(
+        `appointments/status/${status}`,
       );
-      set({
-        loading: true,
-        appointment: data.appointment,
-      });
+      set({ loading: false, appointments: data.appointments });
+      return data;
     } catch (error) {
       set({
         error:
           error?.response?.data?.message ||
-          "Failed to update appointment status",
+          "Failed to fetch appointments by status",
         loading: false,
       });
       throw error;
     }
   },
 
-  updateAppointmentStatus: async (id, appointmentStatus) => {
+  // ── Admin: Update Appointment Status ──────────────────────────────────────────
+  // PUT /appointments/update-status/:id  Body: { status }
+  updateAppointmentStatus: async (id, status) => {
     try {
       if (getRole() !== "Admin") {
-        throw new Error("You are not allowed to acces this api");
+        throw new Error("You are not allowed to access this api");
       }
       set({ loading: true, error: null });
       const { data } = await axiosInstance.put(
         `appointments/update-status/${id}`,
-        appointmentStatus,
+        { status },
       );
-      set({
+      set((state) => ({
         loading: false,
-        appointment: data.appointment,
-      });
+        appointments: state.appointments.map((a) =>
+          a._id === id ? { ...a, status } : a,
+        ),
+      }));
+      return data;
     } catch (error) {
       set({
         error:
@@ -237,26 +257,26 @@ export const useAppointmentStore = create((set, get) => ({
     }
   },
 
+  // ── Admin: Delete Appointment ──────────────────────────────────────────────────
+  // DELETE /appointments/delete/:id
   deleteAppointment: async (id) => {
     try {
       if (getRole() !== "Admin") {
-        throw new Error("You are not allowed to acces this api");
+        throw new Error("You are not allowed to access this api");
       }
-      set({
-        loading: true,
-        error: null,
-      });
+      set({ loading: true, error: null });
       const { data } = await axiosInstance.delete(`appointments/delete/${id}`);
-      set({
+      set((state) => ({
         loading: false,
-        appointment: null,
-      });
+        appointments: state.appointments.filter((a) => a._id !== id),
+      }));
       return data;
     } catch (error) {
       set({
         error: error?.response?.data?.message || "Failed to delete appointment",
         loading: false,
       });
+      throw error;
     }
   },
 }));
