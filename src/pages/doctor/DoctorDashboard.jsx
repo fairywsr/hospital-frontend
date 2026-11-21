@@ -1,9 +1,30 @@
-import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useDoctorStore } from "../../store/userDoctorStore";
 
 function DoctorDashboard() {
-  const user = useAuthStore((state) => state.user);
+  const authUser = useAuthStore((state) => state.user);
+  const { doctor, loading, error, doctorProfile } = useDoctorStore();
+
+  // Fetch fresh profile from the server if we have an id
+  useEffect(() => {
+    const id = authUser?._id || authUser?.id;
+    if (id && !doctor) {
+      doctorProfile(id);
+    }
+  }, [authUser, doctor, doctorProfile]);
+
+  // Merge auth-store snapshot with doctor-store data (doctor-store is more up-to-date)
+  const doc = doctor || authUser;
+
+  // Approval status badge colour
+  const statusColor =
+    doc?.status === "Approved"
+      ? "text-emerald-400"
+      : doc?.status === "Rejected"
+      ? "text-red-400"
+      : "text-amber-400";
 
   return (
     <div className="space-y-6">
@@ -14,10 +35,16 @@ function DoctorDashboard() {
             Physician Dashboard
           </span>
           <h1 className="text-2xl sm:text-3xl font-bold mt-2">
-            Welcome, Dr. {user?.name || user?.fullName || "Physician"}
+            Welcome, Dr.{" "}
+            {loading ? "..." : doc?.name || doc?.fullName || "Physician"}!
           </h1>
           <p className="text-slate-300 text-sm mt-1">
-            Department: <strong className="text-teal-300">{user?.specialization || user?.department || "Cardiology"}</strong> • License: {user?.licenseNumber || "MED-84920"}
+            Specialization:{" "}
+            <strong className="text-teal-300">
+              {doc?.specilization || doc?.specialization || "—"}
+            </strong>{" "}
+            • License:{" "}
+            <strong className="text-teal-300">{doc?.license || "—"}</strong>
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
@@ -36,27 +63,97 @@ function DoctorDashboard() {
         </div>
       </div>
 
+      {/* Error Banner */}
+      {error && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700">
+          ⚠️ {error}
+        </div>
+      )}
+
       {/* Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <span className="text-xs text-slate-500 font-medium">Today's Appointments</span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">8 Patients</p>
-          <span className="text-xs text-teal-600 font-medium">3 Pending Approval</span>
+          <span className="text-xs text-slate-500 font-medium">Experience</span>
+          <p className="text-2xl font-bold text-slate-900 mt-1">
+            {doc?.experience != null ? `${doc.experience} yrs` : "—"}
+          </p>
+          <span className="text-xs text-teal-600 font-medium">Clinical Practice</span>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <span className="text-xs text-slate-500 font-medium">Completed Consultations</span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">142</p>
-          <span className="text-xs text-emerald-600 font-medium">+12 this week</span>
+          <span className="text-xs text-slate-500 font-medium">Age</span>
+          <p className="text-2xl font-bold text-slate-900 mt-1">
+            {doc?.age != null ? `${doc.age} yrs` : "—"}
+          </p>
+          <span className="text-xs text-slate-500 font-medium">
+            Gender: {doc?.gender || "—"}
+          </span>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <span className="text-xs text-slate-500 font-medium">Average Rating</span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">4.9 / 5.0</p>
-          <span className="text-xs text-amber-500 font-medium">★★★★★</span>
+          <span className="text-xs text-slate-500 font-medium">Phone</span>
+          <p className="text-xl font-bold text-slate-900 mt-1 truncate">
+            {doc?.phone || "—"}
+          </p>
+          <span className="text-xs text-blue-600 font-medium">Contact</span>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <span className="text-xs text-slate-500 font-medium">Clinical Status</span>
-          <p className="text-2xl font-bold text-emerald-600 mt-1">Available</p>
-          <span className="text-xs text-slate-500 font-medium">On-Duty</span>
+          <span className="text-xs text-slate-500 font-medium">Profile Status</span>
+          <p className={`text-2xl font-bold mt-1 ${statusColor}`}>
+            {doc?.status || "Pending"}
+          </p>
+          <span className="text-xs text-slate-500 font-medium">Admin Approval</span>
+        </div>
+      </div>
+
+      {/* Doctor Info Card */}
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+        <h2 className="text-sm font-bold text-slate-800 mb-4">
+          👨‍⚕️ Physician Information
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Full Name</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {doc?.name || doc?.fullName || "—"}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Email</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {doc?.email || "—"}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Specialization</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {doc?.specilization || doc?.specialization || "—"}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500 font-medium">License No.</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {doc?.license || "—"}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Role</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {doc?.role || "Doctor"}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Profile Status</span>
+            <p className={`font-semibold mt-0.5 ${statusColor}`}>
+              {doc?.status || "Pending"}
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 pt-4 border-t border-slate-100">
+          <Link
+            to="/doctor/profile"
+            className="text-xs font-semibold text-teal-600 hover:underline"
+          >
+            Edit Profile →
+          </Link>
         </div>
       </div>
     </div>

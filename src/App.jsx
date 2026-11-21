@@ -25,6 +25,9 @@ import AdminLayout from "./components/layouts/AdminLayout";
 // Role-Specific Pages
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
+import DoctorProfile from "./pages/doctor/DoctorProfile";
+import DoctorForgotPassword from "./pages/doctor/DoctorForgotPassword";
+import DoctorResetPassword from "./pages/doctor/DoctorResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
 function App() {
@@ -50,6 +53,8 @@ function App() {
           {/* Dedicated Separate Doctor Auth Views */}
           <Route path="/doctor/login" element={<DoctorLogin />} />
           <Route path="/doctor/register" element={<DoctorRegister />} />
+          <Route path="/doctor/forgot-password" element={<DoctorForgotPassword />} />
+          <Route path="/doctor/reset-password/:token" element={<DoctorResetPassword />} />
           <Route path="/login/doctor" element={<Navigate to="/doctor/login" replace />} />
           <Route path="/register/doctor" element={<Navigate to="/doctor/register" replace />} />
 
@@ -80,7 +85,7 @@ function App() {
           <Route path="appointments" element={<DoctorDashboard />} />
           <Route path="patients" element={<DoctorDashboard />} />
           <Route path="schedule" element={<DoctorDashboard />} />
-          <Route path="profile" element={<DoctorDashboard />} />
+          <Route path="profile" element={<DoctorProfile />} />
         </Route>
       </Route>
 

@@ -1,14 +1,14 @@
-import React from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useDoctorStore } from "../../store/userDoctorStore";
 
 export function DoctorLayout() {
   const user = useAuthStore((state) => state.user);
-  const clearUser = useAuthStore((state) => state.clearUser);
+  const logoutDoctor = useDoctorStore((state) => state.logoutDoctor);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    clearUser();
+  const handleLogout = async () => {
+    await logoutDoctor();
     navigate("/doctor/login");
   };
 
@@ -36,7 +36,7 @@ export function DoctorLayout() {
                     Care<span className="text-teal-400">Pulse</span>
                   </span>
                   <span className="text-[10px] text-teal-300 font-semibold block -mt-1 tracking-wider uppercase">
-                    Physician & Clinical Portal
+                    Physician &amp; Clinical Portal
                   </span>
                 </div>
               </Link>
@@ -70,7 +70,7 @@ export function DoctorLayout() {
                   {user?.name || user?.fullName || "Doctor"}
                 </span>
                 <span className="text-[10px] text-teal-400 font-mono">
-                  {user?.specialization || "Attending Physician"}
+                  {user?.specilization || user?.specialization || "Attending Physician"}
                 </span>
               </div>
               <button

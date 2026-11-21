@@ -86,9 +86,9 @@ function DoctorLogin() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-xs font-semibold text-slate-700">Password</label>
-              <a href="#" className="text-xs text-teal-600 hover:underline">
+              <Link to="/doctor/forgot-password" className="text-xs text-teal-600 hover:underline">
                 Forgot password?
-              </a>
+              </Link>
             </div>
             <div className="relative">
               <input
