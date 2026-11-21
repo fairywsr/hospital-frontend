@@ -1,13 +1,14 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import { usePatientStore } from "../../store/usePatientStore";
 
 export function PatientLayout() {
   const user = useAuthStore((state) => state.user);
-  const clearUser = useAuthStore((state) => state.clearUser);
+  const patientLogout = usePatientStore((state) => state.logout);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    clearUser();
+  const handleLogout = async () => {
+    await patientLogout();
     navigate("/patient/login");
   };
 

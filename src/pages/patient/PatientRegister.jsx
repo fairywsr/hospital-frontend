@@ -75,20 +75,17 @@ function PatientRegister() {
       }
       patientAge = patientAge ? String(patientAge) : "25";
 
+      // Map to the exact fields accepted by the backend Patient model:
+      // { name, email, phone, password, disease, age, gender, bloodGroup }
       const payload = {
-        name: formData.fullName,
-        fullName: formData.fullName,
+        name: formData.fullName,           // schema field: "name"
         email: formData.email,
         password: formData.password,
-        phone: formData.phone,
+        phone: Number(formData.phone) || undefined,
         gender: formData.gender || "Male",
         age: patientAge,
         disease: formData.disease?.trim() || "General Consultation",
-        dob: formData.dob,
         bloodGroup: formData.bloodGroup || "O+",
-        address: formData.address,
-        emergencyContact: formData.emergencyContact,
-        role: "Patient",
       };
 
       await patientRegister(payload);

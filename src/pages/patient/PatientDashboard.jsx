@@ -1,9 +1,22 @@
-import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import { usePatientStore } from "../../store/usePatientStore";
 
 function PatientDashboard() {
-  const user = useAuthStore((state) => state.user);
+  const authUser = useAuthStore((state) => state.user);
+  const { user, loading, error, patientProfile } = usePatientStore();
+
+  // Fetch fresh profile from the server if we have an id
+  useEffect(() => {
+    const id = authUser?._id || authUser?.id;
+    if (id && !user) {
+      patientProfile(id);
+    }
+  }, [authUser, user, patientProfile]);
+
+  // Merge auth-store snapshot with patient-store data (patient-store is more up-to-date)
+  const patient = user || authUser;
 
   return (
     <div className="space-y-6">
@@ -14,10 +27,15 @@ function PatientDashboard() {
             Patient Portal
           </span>
           <h1 className="text-2xl sm:text-3xl font-bold mt-2">
-            Welcome back, {user?.name || user?.fullName || "Patient"}!
+            Welcome back,{" "}
+            {loading
+              ? "..."
+              : patient?.name || patient?.fullName || "Patient"}
+            !
           </h1>
           <p className="text-blue-100 text-sm mt-1">
-            Manage your medical appointments, review laboratory test results, and connect with clinical specialists.
+            Manage your medical appointments, review laboratory test results,
+            and connect with clinical specialists.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
@@ -36,22 +54,82 @@ function PatientDashboard() {
         </div>
       </div>
 
+      {/* Error Banner */}
+      {error && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700">
+          ⚠️ {error}
+        </div>
+      )}
+
       {/* Quick Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <span className="text-xs text-slate-500 font-medium">Upcoming Appointments</span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">1 Scheduled</p>
-          <span className="text-xs text-blue-600 font-medium">Dr. Sarah Mitchell (Tomorrow)</span>
+          <span className="text-xs text-slate-500 font-medium">Blood Group</span>
+          <p className="text-2xl font-bold text-slate-900 mt-1">
+            {patient?.bloodGroup || "—"}
+          </p>
+          <span className="text-xs text-emerald-600 font-medium">On Record</span>
         </div>
+
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <span className="text-xs text-slate-500 font-medium">Blood Group & Type</span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{user?.bloodGroup || "O+"}</p>
-          <span className="text-xs text-emerald-600 font-medium">Normal / Active</span>
+          <span className="text-xs text-slate-500 font-medium">Age</span>
+          <p className="text-2xl font-bold text-slate-900 mt-1">
+            {patient?.age ? `${patient.age} yrs` : "—"}
+          </p>
+          <span className="text-xs text-slate-500 font-medium">
+            Gender: {patient?.gender || "—"}
+          </span>
         </div>
+
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <span className="text-xs text-slate-500 font-medium">Prescriptions & Reports</span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">3 Reports</p>
-          <span className="text-xs text-slate-500 font-medium">Updated this week</span>
+          <span className="text-xs text-slate-500 font-medium">
+            Reason / Condition
+          </span>
+          <p className="text-lg font-bold text-slate-900 mt-1 truncate">
+            {patient?.disease || "—"}
+          </p>
+          <span className="text-xs text-blue-600 font-medium">Primary visit reason</span>
+        </div>
+      </div>
+
+      {/* Patient Info Card */}
+      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+        <h2 className="text-sm font-bold text-slate-800 mb-4">
+          👤 Patient Information
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Full Name</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {patient?.name || patient?.fullName || "—"}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Email</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {patient?.email || "—"}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Phone</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {patient?.phone || "—"}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-slate-500 font-medium">Role</span>
+            <p className="font-semibold text-slate-900 mt-0.5">
+              {patient?.role || "Patient"}
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 pt-4 border-t border-slate-100">
+          <Link
+            to="/patient/profile"
+            className="text-xs font-semibold text-blue-600 hover:underline"
+          >
+            Edit Profile →
+          </Link>
         </div>
       </div>
     </div>

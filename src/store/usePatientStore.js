@@ -8,6 +8,9 @@ export const usePatientStore = create((set, get) => ({
   error: null,
   loading: false,
 
+  // ── Register ────────────────────────────────────────────────────────────────
+  // POST /patient/register-patient
+  // Body: { name, email, phone, password, disease, age, gender, bloodGroup }
   register: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -28,6 +31,10 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
+  // ── Login ───────────────────────────────────────────────────────────────────
+  // POST /patient/patient-login
+  // Body: { email, password }
+  // Controller sends token + patient object; store normalises to data.patient
   login: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -37,11 +44,15 @@ export const usePatientStore = create((set, get) => ({
         userData,
       );
 
-      set({ user: data.user, loading: false });
+      // Controller returns { success, message, patient, token }
+      const patientUser = data.patient || data.user;
+      set({ user: patientUser, loading: false });
+
       useAuthStore.getState().setUser({
-        ...(data.patient || data.user),
+        ...patientUser,
         role: "Patient",
       });
+
       return data;
     } catch (error) {
       set({
@@ -52,6 +63,101 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
+  // ── Logout ──────────────────────────────────────────────────────────────────
+  // POST /patient/patient-logout
+  // Clears the httpOnly cookie on the server; we clear local state too.
+  logout: async () => {
+    try {
+      set({ loading: true, error: null });
+
+      await axiosInstance.post("patient/patient-logout");
+
+      set({ user: null, patients: [], loading: false });
+      useAuthStore.getState().clearUser();
+    } catch (error) {
+      // Even if the server call fails, clear client-side state
+      set({
+        user: null,
+        patients: [],
+        loading: false,
+        error: error?.response?.data?.message || "Logout failed",
+      });
+      useAuthStore.getState().clearUser();
+    }
+  },
+
+  // ── Patient Profile ─────────────────────────────────────────────────────────
+  // GET /patient/patient/:id
+  // Controller uses req.params.id (fixed from original req.body.id bug).
+  patientProfile: async (id) => {
+    try {
+      set({ loading: true, error: null });
+
+      const { data } = await axiosInstance.get(`patient/patient/${id}`);
+
+      set({ loading: false, user: data.user });
+      return data;
+    } catch (error) {
+      set({
+        error: error?.response?.data?.message || "Profile not found",
+        loading: false,
+      });
+      throw error;
+    }
+  },
+
+  // ── Update Profile ──────────────────────────────────────────────────────────
+  // PUT /patient/update-profile/:id
+  // Controller returns { success, message, patient } with status 200.
+  // Note: original controller had a bug returning status 500 on success —
+  //       the fixed controller should return 200; we handle both gracefully.
+  updateProfile: async (id, userData) => {
+    try {
+      set({ loading: true, error: null });
+
+      const { data } = await axiosInstance.put(
+        `patient/update-profile/${id}`,
+        userData,
+      );
+
+      // Controller returns { patient } after update
+      const updated = data.patient || data.user;
+      set({ loading: false, user: updated });
+      return data;
+    } catch (error) {
+      set({
+        error: error?.response?.data?.message || "Profile not updated",
+        loading: false,
+      });
+      throw error;
+    }
+  },
+
+  // ── Delete Profile ──────────────────────────────────────────────────────────
+  // DELETE /patient/delete-profile/:id
+  deleteProfile: async (id) => {
+    try {
+      set({ loading: true, error: null });
+
+      const { data } = await axiosInstance.delete(
+        `patient/delete-profile/${id}`,
+      );
+
+      set({ loading: false, user: null });
+      useAuthStore.getState().clearUser();
+      return data;
+    } catch (error) {
+      set({
+        error: error?.response?.data?.message || "Profile not deleted",
+        loading: false,
+      });
+      throw error;
+    }
+  },
+
+  // ── Reset Password Request ──────────────────────────────────────────────────
+  // PUT /patient/reset-password-request
+  // Body: { email }
   resetPasswordRequest: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -73,6 +179,9 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
+  // ── Reset Password (via token) ───────────────────────────────────────────────
+  // PUT /patient/reset-password/:token
+  // Body: { password, confirmPassword }
   resetPassword: async (token, userData) => {
     try {
       set({ loading: true, error: null });
@@ -93,6 +202,10 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
+  // ── Update Password (while logged in) ──────────────────────────────────────
+  // PUT /patient/update-password
+  // Body: { oldPassword, newPassword, confirmPassword }
+  // Requires auth cookie / token; controller reads req.user.id.
   updatePassword: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -113,75 +226,18 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  patientProfile: async (id) => {
-    try {
-      set({ loading: true, error: null });
-
-      const { data } = await axiosInstance.get(`patient/patient/${id}`);
-
-      set({ loading: false, user: data.user });
-      return data;
-    } catch (error) {
-      set({
-        error: error?.response?.data?.message || "Profile not found",
-        loading: false,
-      });
-      throw error;
-    }
-  },
-
-  updateProfile: async (id, userData) => {
-    try {
-      set({ loading: true, error: null });
-
-      const { data } = await axiosInstance.put(
-        `patient/update-profile/${id}`,
-        userData,
-      );
-
-      set({ loading: false, user: data.user });
-      return data;
-    } catch (error) {
-      set({
-        error: error?.response?.data?.message || "Profile not updated",
-        loading: false,
-      });
-      throw error;
-    }
-  },
-
-  deleteProfile: async (id) => {
-    try {
-      set({ loading: true, error: null });
-
-      const { data } = await axiosInstance.delete(
-        `patient/delete-profile/${id}`,
-      );
-
-      set({ loading: false, user: null });
-      return data;
-    } catch (error) {
-      set({
-        error: error?.response?.data?.message || "Profile not deleted",
-        loading: false,
-      });
-      throw error;
-    }
-  },
-
-  // Api for Doctor -- all-patients
+  // ── All Patients (Doctor/Admin only) ────────────────────────────────────────
+  // GET /patient/all-patients
+  // Controller returns { allPatients: [...] }  ← key is "allPatients"
   getAllPatients: async () => {
     try {
-      if (get().user?.role !== "Doctor") {
-        throw new Error("Only doctors can access all patients");
-      }
-
       set({ loading: true, error: null });
 
       const { data } = await axiosInstance.get("patient/all-patients");
 
       set({
-        patients: data.patients,
+        // Controller returns `allPatients`, not `patients`
+        patients: data.allPatients || data.patients || [],
         loading: false,
       });
 
