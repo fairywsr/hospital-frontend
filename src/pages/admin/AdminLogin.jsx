@@ -134,19 +134,7 @@ function AdminLogin() {
           </Link>
         </div>
 
-        {/* Portal Switcher */}
-        <div className="mt-6 pt-5 border-t border-slate-700 text-center">
-          <p className="text-[11px] text-slate-400 mb-2">Switch Portal</p>
-          <div className="flex items-center justify-center gap-3 text-xs">
-            <Link to="/patient/login" className="text-blue-400 font-medium hover:underline">
-              Patient Portal
-            </Link>
-            <span className="text-slate-600">•</span>
-            <Link to="/doctor/login" className="text-teal-400 font-medium hover:underline">
-              Doctor Portal
-            </Link>
-          </div>
-        </div>
+
       </div>
     </div>
   );

@@ -135,9 +135,9 @@ function Header() {
                   </button>
 
                   {loginMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95">
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95">
                       <div className="px-3 py-1.5 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Select Sign In View
+                        Patient Sign In
                       </div>
                       <Link
                         to="/patient/login"
@@ -148,30 +148,13 @@ function Header() {
                         <span>Patient Portal Sign In</span>
                       </Link>
                       <Link
-                        to="/doctor/login"
+                        to="/patient/register"
                         onClick={() => setLoginMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700"
+                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
                       >
-                        <span className="w-2 h-2 rounded-full bg-teal-500"></span>
-                        <span>Doctor & Physician Sign In</span>
+                        <span className="w-2 h-2 rounded-full bg-blue-300"></span>
+                        <span>New Patient? Register here</span>
                       </Link>
-                      <Link
-                        to="/admin/login"
-                        onClick={() => setLoginMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-purple-50 hover:text-purple-700"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-                        <span>Hospital Admin Sign In</span>
-                      </Link>
-                      <div className="border-t border-slate-100 mt-1 pt-1">
-                        <Link
-                          to="/login"
-                          onClick={() => setLoginMenuOpen(false)}
-                          className="block px-3 py-1.5 text-[11px] text-center text-blue-600 hover:underline"
-                        >
-                          View all portal options →
-                        </Link>
-                      </div>
                     </div>
                   )}
                 </div>
@@ -193,9 +176,9 @@ function Header() {
                   </button>
 
                   {registerMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
                       <div className="px-3 py-1.5 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Select Registration View
+                        Patient Registration
                       </div>
                       <Link
                         to="/patient/register"
@@ -206,30 +189,13 @@ function Header() {
                         <span>Register as Patient</span>
                       </Link>
                       <Link
-                        to="/doctor/register"
+                        to="/patient/login"
                         onClick={() => setRegisterMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700"
+                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
                       >
-                        <span className="w-2 h-2 rounded-full bg-teal-500"></span>
-                        <span>Register as Doctor</span>
+                        <span className="w-2 h-2 rounded-full bg-blue-300"></span>
+                        <span>Already registered? Sign In</span>
                       </Link>
-                      <Link
-                        to="/admin/register"
-                        onClick={() => setRegisterMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-purple-50 hover:text-purple-700"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-                        <span>Register as Admin</span>
-                      </Link>
-                      <div className="border-t border-slate-100 mt-1 pt-1">
-                        <Link
-                          to="/register"
-                          onClick={() => setRegisterMenuOpen(false)}
-                          className="block px-3 py-1.5 text-[11px] text-center text-blue-600 hover:underline"
-                        >
-                          View all registration views →
-                        </Link>
-                      </div>
                     </div>
                   )}
                 </div>

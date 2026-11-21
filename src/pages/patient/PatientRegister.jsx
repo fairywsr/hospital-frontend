@@ -412,17 +412,7 @@ function PatientRegister() {
             </form>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>
-              Are you medical staff?{" "}
-              <Link to="/doctor/register" className="text-teal-600 font-semibold hover:underline">
-                Doctor Registration
-              </Link>
-            </span>
-            <Link to="/admin/register" className="text-purple-600 font-semibold hover:underline">
-              Admin Access
-            </Link>
-          </div>
+
         </div>
       </div>
     </div>

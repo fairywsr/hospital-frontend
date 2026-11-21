@@ -313,17 +313,7 @@ function AdminRegister() {
             </form>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-700 flex items-center justify-between text-xs text-slate-400">
-            <span>
-              Looking for clinical portals?{" "}
-              <Link to="/doctor/register" className="text-teal-400 font-semibold hover:underline">
-                Doctor Registration
-              </Link>
-            </span>
-            <Link to="/patient/register" className="text-blue-400 font-semibold hover:underline">
-              Patient Portal
-            </Link>
-          </div>
+
         </div>
       </div>
     </div>
