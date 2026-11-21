@@ -13,9 +13,12 @@ export function AdminLayout() {
   };
 
   const navItems = [
-    { name: "Overview", path: "/admin/dashboard", icon: "📊" },
-    { name: "Doctor Approvals", path: "/admin/pending-doctors", icon: "🩺", badge: "Verification" },
-    { name: "All Doctors", path: "/admin/doctors", icon: "👨‍⚕️" },
+    {
+      name: "All Doctors",
+      path: "/admin/doctors",
+      icon: "🩺",
+      badge: "Verification",
+    },
     { name: "All Patients", path: "/admin/patients", icon: "👥" },
     { name: "Hospital Appointments", path: "/admin/appointments", icon: "📅" },
     { name: "System Settings", path: "/admin/settings", icon: "⚙️" },
@@ -47,9 +50,10 @@ export function AdminLayout() {
                 to={item.path}
                 end={item.path === "/admin/dashboard"}
                 className={({ isActive }) =>
-                  `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${isActive
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-900/50"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+                  `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    isActive
+                      ? "bg-purple-600 text-white shadow-md shadow-purple-900/50"
+                      : "text-slate-400 hover:text-white hover:bg-slate-800/60"
                   }`
                 }
               >
@@ -74,8 +78,12 @@ export function AdminLayout() {
               AD
             </div>
             <div className="overflow-hidden">
-              <p className="text-xs font-semibold text-white truncate">{user?.name || user?.fullName || "Administrator"}</p>
-              <p className="text-[10px] text-purple-400 truncate">Super Administrator</p>
+              <p className="text-xs font-semibold text-white truncate">
+                {user?.name || user?.fullName || "Administrator"}
+              </p>
+              <p className="text-[10px] text-purple-400 truncate">
+                Super Administrator
+              </p>
             </div>
           </div>
           <button
@@ -92,7 +100,10 @@ export function AdminLayout() {
         {/* Mobile top bar */}
         <header className="md:hidden bg-slate-900 text-white h-14 flex items-center justify-between px-4">
           <span className="font-bold text-sm">CarePulse Admin</span>
-          <button onClick={handleLogout} className="text-xs bg-slate-800 px-2.5 py-1 rounded">
+          <button
+            onClick={handleLogout}
+            className="text-xs bg-slate-800 px-2.5 py-1 rounded"
+          >
             Logout
           </button>
         </header>

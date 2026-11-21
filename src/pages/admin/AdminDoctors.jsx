@@ -2,12 +2,18 @@ import { useEffect, useState } from "react";
 import { useDoctorStore } from "../../store/userDoctorStore";
 
 function AdminDoctors() {
-  const { allDoctors, loading, error, getAllDoctors, approveDoctor, rejectDoctor } =
-    useDoctorStore();
+  const {
+    allDoctors,
+    loading,
+    error,
+    getAllDoctors,
+    approveDoctor,
+    rejectDoctor,
+  } = useDoctorStore();
 
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
-  const [actionLoading, setActionLoading] = useState(null); // id of doctor being acted on
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     getAllDoctors();
@@ -41,8 +47,7 @@ function AdminDoctors() {
       spec.toLowerCase().includes(search.toLowerCase());
 
     const status = doc.profileStatus || doc.status || "Pending";
-    const matchStatus =
-      filterStatus === "All" || status === filterStatus;
+    const matchStatus = filterStatus === "All" || status === filterStatus;
 
     return matchSearch && matchStatus;
   });
@@ -50,13 +55,13 @@ function AdminDoctors() {
   const statusCounts = {
     All: allDoctors.length,
     Approved: allDoctors.filter(
-      (d) => (d.profileStatus || d.status) === "Approved"
+      (d) => (d.profileStatus || d.status) === "Approved",
     ).length,
     Pending: allDoctors.filter(
-      (d) => (d.profileStatus || d.status) === "Pending"
+      (d) => (d.profileStatus || d.status) === "Pending",
     ).length,
     Rejected: allDoctors.filter(
-      (d) => (d.profileStatus || d.status) === "Rejected"
+      (d) => (d.profileStatus || d.status) === "Rejected",
     ).length,
   };
 
@@ -82,7 +87,8 @@ function AdminDoctors() {
             </span>
             <h1 className="text-2xl font-bold text-slate-900">All Doctors</h1>
             <p className="text-xs text-slate-500 mt-1">
-              View, verify, and manage all registered physicians across the hospital.
+              View, verify, and manage all registered physicians across the
+              hospital.
             </p>
           </div>
           <button
@@ -114,10 +120,16 @@ function AdminDoctors() {
                 : "border-slate-200 hover:border-purple-300"
             }`}
           >
-            <span className="text-[11px] text-slate-500 font-medium block">{label}</span>
-            <span className="text-2xl font-bold text-slate-900 mt-0.5 block">{count}</span>
+            <span className="text-[11px] text-slate-500 font-medium block">
+              {label}
+            </span>
+            <span className="text-2xl font-bold text-slate-900 mt-0.5 block">
+              {count}
+            </span>
             <span className="text-[10px] text-slate-400">
-              {label === "All" ? "Total registered" : `${label.toLowerCase()} status`}
+              {label === "All"
+                ? "Total registered"
+                : `${label.toLowerCase()} status`}
             </span>
           </button>
         ))}
@@ -200,7 +212,9 @@ function AdminDoctors() {
         <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
           <div className="text-4xl mb-3">👨‍⚕️</div>
           <h3 className="text-base font-semibold text-slate-700 mb-1">
-            {allDoctors.length === 0 ? "No doctors found" : "No results match your filter"}
+            {allDoctors.length === 0
+              ? "No doctors found"
+              : "No results match your filter"}
           </h3>
           <p className="text-xs text-slate-400 max-w-xs mx-auto">
             {allDoctors.length === 0
@@ -255,23 +269,33 @@ function AdminDoctors() {
                   <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-2 text-xs">
                     <div>
                       <span className="text-slate-400 block">Name</span>
-                      <span className="font-semibold text-slate-800">{name}</span>
+                      <span className="font-semibold text-slate-800">
+                        {name}
+                      </span>
                     </div>
                     <div>
                       <span className="text-slate-400 block">Email</span>
-                      <span className="font-medium text-slate-700 break-all">{email}</span>
+                      <span className="font-medium text-slate-700 break-all">
+                        {email}
+                      </span>
                     </div>
                     <div>
                       <span className="text-slate-400 block">Phone</span>
-                      <span className="font-medium text-slate-700">{phone}</span>
+                      <span className="font-medium text-slate-700">
+                        {phone}
+                      </span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block">Specialization</span>
+                      <span className="text-slate-400 block">
+                        Specialization
+                      </span>
                       <span className="font-medium text-slate-700">{spec}</span>
                     </div>
                     <div>
                       <span className="text-slate-400 block">License No.</span>
-                      <span className="font-medium text-slate-700">{license}</span>
+                      <span className="font-medium text-slate-700">
+                        {license}
+                      </span>
                     </div>
                     <div>
                       <span className="text-slate-400 block">Experience</span>
@@ -286,7 +310,9 @@ function AdminDoctors() {
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block">Consultation Fee</span>
+                      <span className="text-slate-400 block">
+                        Consultation Fee
+                      </span>
                       <span className="font-medium text-slate-700">
                         {fee !== "—" ? `$${fee}` : "—"}
                       </span>

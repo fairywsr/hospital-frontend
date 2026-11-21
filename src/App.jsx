@@ -36,6 +36,7 @@ import DoctorResetPassword from "./pages/doctor/DoctorResetPassword";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminAppointments from "./pages/admin/AdminAppointments";
 import AdminDoctors from "./pages/admin/AdminDoctors";
+import AdminPatients from "./pages/admin/AdminPatients";
 
 function App() {
   return (
@@ -105,7 +106,7 @@ function App() {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="pending-doctors" element={<AdminDashboard />} />
           <Route path="doctors" element={<AdminDoctors />} />
-          <Route path="patients" element={<AdminDashboard />} />
+          <Route path="patients" element={<AdminPatients />} />
           <Route path="appointments" element={<AdminAppointments />} />
           <Route path="settings" element={<AdminDashboard />} />
         </Route>

@@ -2,24 +2,38 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useAdminStore } from "../../store/useAdminStore";
+import { usePatientStore } from "../../store/usePatientStore";
+import { useDoctorStore } from "../../store/userDoctorStore";
+import { useAppointmentStore } from "../../store/useAppointmentStore";
 
 function AdminDashboard() {
   const user = useAuthStore((state) => state.user);
   const { admin, doctors, loading, adminProfile, allPendingDoctors } =
     useAdminStore();
+  const { patients, loading: patientsLoading, getAllPatients } = usePatientStore();
+  const { allDoctors, loading: doctorsLoading, getAllDoctors } = useDoctorStore();
+  const { appointments, loading: appointmentsLoading, allAppointments } = useAppointmentStore();
 
-  // Load admin profile + pending doctors on mount
+  // Load admin profile + pending doctors + real counts on mount
   useEffect(() => {
     if (user?._id) {
       adminProfile(user._id);
     }
     allPendingDoctors();
+    getAllPatients();
+    getAllDoctors();
+    allAppointments();
   }, [user?._id]);
 
   const displayName =
     admin?.name || user?.name || user?.fullName || "Administrator";
   const displayEmail = admin?.email || user?.email || "";
   const pendingCount = doctors?.length ?? 0;
+  const activeDoctorsCount = (allDoctors || []).filter(
+    (d) => (d.profileStatus || d.status) === "Approved"
+  ).length || allDoctors?.length || 0;
+  const totalPatientsCount = patients?.length ?? 0;
+  const totalAppointmentsCount = appointments?.length ?? 0;
 
   return (
     <div className="space-y-6">
@@ -76,31 +90,53 @@ function AdminDashboard() {
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
           <span className="text-xs text-slate-500 font-medium">
-            Total Active Doctors
+            Total Registered Doctors
           </span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">28 Doctors</p>
+          {doctorsLoading ? (
+            <p className="text-2xl font-bold text-slate-400 mt-1 animate-pulse">
+              Loading…
+            </p>
+          ) : (
+            <p className="text-2xl font-bold text-slate-900 mt-1">
+              {allDoctors?.length ?? 0} Doctors
+            </p>
+          )}
           <span className="text-xs text-emerald-600 font-medium">
-            Across 8 departments
+            {activeDoctorsCount} Approved & Active
           </span>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
           <span className="text-xs text-slate-500 font-medium">
             Total Registered Patients
           </span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">
-            1,248 Patients
-          </p>
+          {patientsLoading ? (
+            <p className="text-2xl font-bold text-slate-400 mt-1 animate-pulse">
+              Loading…
+            </p>
+          ) : (
+            <p className="text-2xl font-bold text-slate-900 mt-1">
+              {totalPatientsCount} Patients
+            </p>
+          )}
           <span className="text-xs text-blue-600 font-medium">
-            +42 this month
+            Live patient database
           </span>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
           <span className="text-xs text-slate-500 font-medium">
             Total Hospital Appointments
           </span>
-          <p className="text-2xl font-bold text-slate-900 mt-1">3,480 Visits</p>
+          {appointmentsLoading ? (
+            <p className="text-2xl font-bold text-slate-400 mt-1 animate-pulse">
+              Loading…
+            </p>
+          ) : (
+            <p className="text-2xl font-bold text-slate-900 mt-1">
+              {totalAppointmentsCount} Visits
+            </p>
+          )}
           <span className="text-xs text-slate-500 font-medium">
-            98.4% fulfillment rate
+            Live scheduling records
           </span>
         </div>
       </div>
