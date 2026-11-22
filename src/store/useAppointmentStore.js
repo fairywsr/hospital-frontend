@@ -10,9 +10,7 @@ export const useAppointmentStore = create((set) => ({
   error: null,
   loading: false,
 
-  // ── Patient: Create Appointment ───────────────────────────────────────────────
-  // POST /appointments/new-appointment
-  // Body: { doctor, appointmentDate, reason }
+  // ── Patient: Create Appointment ────────────
   createNewAppointment: async (appointmentData) => {
     try {
       if (getRole() !== "Patient") {
@@ -40,8 +38,7 @@ export const useAppointmentStore = create((set) => ({
     }
   },
 
-  // ── Patient: Get My Appointments ──────────────────────────────────────────────
-  // GET /appointments/all-appointments
+  // ── Patient: Get My Appointments ──────────
   getPatientAppointment: async () => {
     try {
       if (getRole() !== "Patient") {
@@ -60,8 +57,7 @@ export const useAppointmentStore = create((set) => ({
     }
   },
 
-  // ── Doctor: Get My Appointments ────────────────────────────────────────────────
-  // GET /appointments/doctor-appointments
+  // ── Doctor: Get My Appointments ───────────
   getDoctorAppointment: async () => {
     try {
       if (getRole() !== "Doctor") {
@@ -82,8 +78,7 @@ export const useAppointmentStore = create((set) => ({
     }
   },
 
-  // ── Doctor: Approve Appointment ────────────────────────────────────────────────
-  // PUT /appointments/approve/:id
+  // ── Doctor: Approve Appointment ──────
   approveAppointmentStatus: async (id) => {
     try {
       if (getRole() !== "Doctor") {
@@ -108,8 +103,7 @@ export const useAppointmentStore = create((set) => ({
     }
   },
 
-  // ── Doctor: Reject Appointment ─────────────────────────────────────────────────
-  // PUT /appointments/reject/:id
+  // ── Doctor: Reject Appointment ───────────
   rejectAppointmentStatus: async (id) => {
     try {
       if (getRole() !== "Doctor") {
@@ -126,16 +120,14 @@ export const useAppointmentStore = create((set) => ({
       return data;
     } catch (error) {
       set({
-        error:
-          error?.response?.data?.message || "Failed to reject appointment",
+        error: error?.response?.data?.message || "Failed to reject appointment",
         loading: false,
       });
       throw error;
     }
   },
 
-  // ── Doctor/Patient: Cancel Appointment ────────────────────────────────────────
-  // PUT /appointments/cancel/:id
+  // ── Doctor/Patient: Cancel Appointment ───
   cancelAppointment: async (id) => {
     try {
       const role = getRole();
@@ -153,16 +145,14 @@ export const useAppointmentStore = create((set) => ({
       return data;
     } catch (error) {
       set({
-        error:
-          error?.response?.data?.message || "Failed to cancel appointment",
+        error: error?.response?.data?.message || "Failed to cancel appointment",
         loading: false,
       });
       throw error;
     }
   },
 
-  // ── Admin: Get All Appointments ────────────────────────────────────────────────
-  // GET /appointments/all
+  // ── Admin: Get All Appointments ───────
   allAppointments: async () => {
     try {
       if (getRole() !== "Admin") {
@@ -181,8 +171,7 @@ export const useAppointmentStore = create((set) => ({
     }
   },
 
-  // ── Admin: Appointment Detail ──────────────────────────────────────────────────
-  // GET /appointments/:id
+  // ── Admin: Appointment Detail ───────
   appointmentDetail: async (id) => {
     try {
       if (getRole() !== "Admin") {
@@ -203,17 +192,14 @@ export const useAppointmentStore = create((set) => ({
     }
   },
 
-  // ── Admin: Get Appointments By Status ─────────────────────────────────────────
-  // GET /appointments/status/:status
+  // ── Admin: Get Appointments By Status ───
   appointmentByStatus: async (status) => {
     try {
       if (getRole() !== "Admin") {
         throw new Error("You are not allowed to access this api");
       }
       set({ loading: true, error: null });
-      const { data } = await axiosInstance.get(
-        `appointments/status/${status}`,
-      );
+      const { data } = await axiosInstance.get(`appointments/status/${status}`);
       set({ loading: false, appointments: data.appointments });
       return data;
     } catch (error) {
@@ -227,8 +213,7 @@ export const useAppointmentStore = create((set) => ({
     }
   },
 
-  // ── Admin: Update Appointment Status ──────────────────────────────────────────
-  // PUT /appointments/update-status/:id  Body: { status }
+  // ── Admin: Update Appointment Status ───────
   updateAppointmentStatus: async (id, status) => {
     try {
       if (getRole() !== "Admin") {
@@ -257,8 +242,7 @@ export const useAppointmentStore = create((set) => ({
     }
   },
 
-  // ── Admin: Delete Appointment ──────────────────────────────────────────────────
-  // DELETE /appointments/delete/:id
+  // ── Admin: Delete Appointment ─────────
   deleteAppointment: async (id) => {
     try {
       if (getRole() !== "Admin") {

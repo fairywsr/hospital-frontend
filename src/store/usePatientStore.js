@@ -8,9 +8,7 @@ export const usePatientStore = create((set, get) => ({
   error: null,
   loading: false,
 
-  // ── Register ────────────────────────────────────────────────────────────────
-  // POST /patient/register-patient
-  // Body: { name, email, phone, password, disease, age, gender, bloodGroup }
+  // ── Register ──────────────
   register: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -31,10 +29,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── Login ───────────────────────────────────────────────────────────────────
-  // POST /patient/patient-login
-  // Body: { email, password }
-  // Controller sends token + patient object; store normalises to data.patient
+  // ── Login ────────────────────────────
   login: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -63,9 +58,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── Logout ──────────────────────────────────────────────────────────────────
-  // POST /patient/patient-logout
-  // Clears the httpOnly cookie on the server; we clear local state too.
+  // ── Logout ─────────────
   logout: async () => {
     try {
       set({ loading: true, error: null });
@@ -86,9 +79,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── Patient Profile ─────────────────────────────────────────────────────────
-  // GET /patient/patient/:id
-  // Controller uses req.params.id (fixed from original req.body.id bug).
+  // ── Patient Profile ───────────────────
   patientProfile: async (id) => {
     try {
       set({ loading: true, error: null });
@@ -106,11 +97,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── Update Profile ──────────────────────────────────────────────────────────
-  // PUT /patient/update-profile/:id
-  // Controller returns { success, message, patient } with status 200.
-  // Note: original controller had a bug returning status 500 on success —
-  //       the fixed controller should return 200; we handle both gracefully.
+  // ── Update Profile ─────────────
   updateProfile: async (id, userData) => {
     try {
       set({ loading: true, error: null });
@@ -133,8 +120,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── Delete Profile ──────────────────────────────────────────────────────────
-  // DELETE /patient/delete-profile/:id
+  // ── Delete Profile ────────────
   deleteProfile: async (id) => {
     try {
       set({ loading: true, error: null });
@@ -155,9 +141,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── Reset Password Request ──────────────────────────────────────────────────
-  // PUT /patient/reset-password-request
-  // Body: { email }
+  // ── Reset Password Request ────────
   resetPasswordRequest: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -179,9 +163,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── Reset Password (via token) ───────────────────────────────────────────────
-  // PUT /patient/reset-password/:token
-  // Body: { password, confirmPassword }
+  // ── Reset Password (via token) ─────────
   resetPassword: async (token, userData) => {
     try {
       set({ loading: true, error: null });
@@ -202,10 +184,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── Update Password (while logged in) ──────────────────────────────────────
-  // PUT /patient/update-password
-  // Body: { oldPassword, newPassword, confirmPassword }
-  // Requires auth cookie / token; controller reads req.user.id.
+  // ── Update Password (while logged in) ─────────
   updatePassword: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -226,9 +205,7 @@ export const usePatientStore = create((set, get) => ({
     }
   },
 
-  // ── All Patients (Doctor/Admin only) ────────────────────────────────────────
-  // GET /patient/all-patients
-  // Controller returns { allPatients: [...] }  ← key is "allPatients"
+  // ── All Patients (Doctor/Admin only) ───────────
   getAllPatients: async () => {
     try {
       set({ loading: true, error: null });
@@ -236,7 +213,6 @@ export const usePatientStore = create((set, get) => ({
       const { data } = await axiosInstance.get("patient/all-patients");
 
       set({
-        // Controller returns `allPatients`, not `patients`
         patients: data.allPatients || data.patients || [],
         loading: false,
       });

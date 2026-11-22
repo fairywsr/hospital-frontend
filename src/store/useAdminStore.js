@@ -64,7 +64,11 @@ export const useAdminStore = create((set) => ({
       return data;
     } catch (error) {
       // Clear client-side state even if server call fails
-      set({ admin: null, loading: false, error: error?.response?.data?.message || "Failed to admin logout" });
+      set({
+        admin: null,
+        loading: false,
+        error: error?.response?.data?.message || "Failed to admin logout",
+      });
       useAuthStore.getState().clearUser();
     }
   },
