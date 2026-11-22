@@ -162,6 +162,7 @@ export const useAdminStore = create((set) => ({
         error: error?.response?.data?.message || "Failed to send email",
         loading: false,
       });
+      throw error;
     }
   },
 
@@ -182,6 +183,7 @@ export const useAdminStore = create((set) => ({
         error: error?.response?.data?.message || "Failed to reset password",
         loading: false,
       });
+      throw error;
     }
   },
 

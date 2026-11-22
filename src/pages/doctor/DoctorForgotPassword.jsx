@@ -14,13 +14,25 @@ function DoctorForgotPassword() {
     e.preventDefault();
     setMsg("");
     setFormError("");
+
+    if (!email.trim()) {
+      setFormError("Please enter your registered physician email address.");
+      return;
+    }
+
     setSubmitting(true);
     try {
-      const data = await resetPasswordRequest({ email });
-      setMsg(data?.message || "Reset link sent! Please check your inbox.");
+      const data = await resetPasswordRequest({ email: email.trim() });
+      setMsg(
+        data?.message ||
+          `A password reset link has been sent to ${email}. Please check your inbox.`
+      );
+      setEmail("");
     } catch (err) {
       setFormError(
-        err?.response?.data?.message || err?.message || "Failed to send reset email."
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to send reset email. Please try again."
       );
     } finally {
       setSubmitting(false);
@@ -28,31 +40,71 @@ function DoctorForgotPassword() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-slate-50 py-12 px-4 flex items-center justify-center">
+    <div className="min-h-[calc(100vh-80px)] bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-teal-600 text-white rounded-xl mx-auto flex items-center justify-center shadow-md shadow-teal-200 mb-3 text-xl font-bold">
-            ⚕
+          <div className="w-12 h-12 bg-teal-600 text-white rounded-xl mx-auto flex items-center justify-center shadow-md shadow-teal-200 mb-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 0 1 21.75 8.25Z"
+              />
+            </svg>
           </div>
           <span className="inline-block px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-semibold mb-2 border border-teal-200">
             Physician Portal
           </span>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Forgot Password
+            Doctor Forgot Password
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Enter your registered email and we'll send a reset link.
+            Enter your registered physician email and we'll send you a reset link.
           </p>
         </div>
 
+        {/* Success */}
         {msg && (
-          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800">
-            ✅ {msg}
+          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800 flex items-start gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+            <span>{msg}</span>
           </div>
         )}
+
+        {/* Error */}
         {formError && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
-            ❌ {formError}
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-4 h-4 shrink-0 text-red-600"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+              />
+            </svg>
+            <span>{formError}</span>
           </div>
         )}
 
@@ -70,12 +122,28 @@ function DoctorForgotPassword() {
               className="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-600 transition-all placeholder:text-slate-400"
             />
           </div>
+
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 shadow-md shadow-teal-200 transition-all disabled:opacity-70"
+            className="w-full py-3 px-4 rounded-xl text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 shadow-md shadow-teal-200 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
           >
-            {submitting ? "Sending..." : "Send Reset Link"}
+            {submitting ? (
+              <>
+                <svg
+                  className="animate-spin h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                <span>Sending Reset Link...</span>
+              </>
+            ) : (
+              "Send Reset Link"
+            )}
           </button>
         </form>
 

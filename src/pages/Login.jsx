@@ -29,11 +29,18 @@ function Login() {
             >
               Sign In to Patient Portal
             </Link>
-            <div className="text-center">
-              <span className="text-xs text-slate-500">Don't have an account? </span>
-              <Link to="/patient/register" className="text-xs font-semibold text-blue-600 hover:underline">
-                Create patient account →
-              </Link>
+            <div className="text-center space-y-1.5">
+              <div>
+                <span className="text-xs text-slate-500">Don't have an account? </span>
+                <Link to="/patient/register" className="text-xs font-semibold text-blue-600 hover:underline">
+                  Create patient account →
+                </Link>
+              </div>
+              <div>
+                <Link to="/forgot-password" className="text-xs text-slate-500 hover:text-blue-600 hover:underline">
+                  Forgot your password? Reset it here
+                </Link>
+              </div>
             </div>
           </div>
         </div>
