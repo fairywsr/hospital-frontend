@@ -1,4 +1,5 @@
-import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
 import { usePatientStore } from "../../store/usePatientStore";
 
@@ -6,6 +7,13 @@ export function PatientLayout() {
   const user = useAuthStore((state) => state.user);
   const patientLogout = usePatientStore((state) => state.logout);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const handleLogout = async () => {
     await patientLogout();
@@ -22,7 +30,7 @@ export function PatientLayout() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Top Patient Portal Navigation Bar */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Brand Logo */}
@@ -63,9 +71,9 @@ export function PatientLayout() {
               ))}
             </nav>
 
-            {/* User Chip & Logout */}
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex flex-col text-right">
+            {/* User Chip & Logout (Desktop) */}
+            <div className="hidden sm:flex items-center gap-3">
+              <div className="flex flex-col text-right">
                 <span className="text-xs font-bold text-slate-800">{user?.name || user?.fullName || "Patient"}</span>
                 <span className="text-[10px] text-emerald-600 font-medium">Verified Patient</span>
               </div>
@@ -76,8 +84,113 @@ export function PatientLayout() {
                 Log Out
               </button>
             </div>
+
+            {/* Mobile Actions: Compact Logout + Hamburger Toggle */}
+            <div className="flex sm:hidden items-center gap-2">
+              <button
+                onClick={handleLogout}
+                className="text-xs font-semibold px-2 py-1 border border-slate-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-slate-700 rounded-lg transition-all"
+              >
+                Log Out
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+                className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 focus:outline-none transition-colors border border-blue-200"
+                aria-expanded={mobileMenuOpen}
+                aria-label="Toggle navigation menu"
+              >
+                {mobileMenuOpen ? (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                  </svg>
+                )}
+              </button>
+            </div>
+
+            {/* Tablet Hamburger (hidden on mobile and md+) */}
+            <div className="hidden sm:flex md:hidden items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+                className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 focus:outline-none transition-colors border border-blue-200"
+                aria-expanded={mobileMenuOpen}
+                aria-label="Toggle navigation menu"
+              >
+                {mobileMenuOpen ? (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile / Tablet Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-5 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-150">
+            {/* Patient Info Chip */}
+            <div className="px-3 py-2 bg-slate-50 rounded-xl flex items-center justify-between border border-slate-100">
+              <div>
+                <p className="text-xs font-bold text-slate-800">
+                  {user?.name || user?.fullName || "Patient"}
+                </p>
+                <p className="text-[10px] text-emerald-600 font-medium">
+                  Verified Patient
+                </p>
+              </div>
+              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">
+                Patient Portal
+              </span>
+            </div>
+
+            {/* Navigation links */}
+            <nav className="flex flex-col space-y-1">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  end={item.path === "/patient/dashboard"}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `px-3 py-2.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-all ${
+                      isActive
+                        ? "bg-blue-50 text-blue-700 border border-blue-200"
+                        : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                    }`
+                  }
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-base">{item.icon}</span>
+                    <span>{item.name}</span>
+                  </div>
+                  <span className="text-slate-400 text-xs">→</span>
+                </NavLink>
+              ))}
+            </nav>
+
+            <div className="pt-2 border-t border-slate-200">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="w-full text-center text-xs font-semibold py-2 px-3 border border-red-200 text-red-600 hover:bg-red-50 rounded-lg transition-all"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content Area */}

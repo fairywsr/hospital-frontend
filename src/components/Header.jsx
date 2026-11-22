@@ -1,15 +1,22 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
 function Header() {
   const user = useAuthStore((state) => state.user);
   const clearUser = useAuthStore((state) => state.clearUser);
+  const location = useLocation();
 
   const [loginMenuOpen, setLoginMenuOpen] = useState(false);
   const [registerMenuOpen, setRegisterMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const loginRef = useRef(null);
   const registerRef = useRef(null);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -99,8 +106,8 @@ function Header() {
             </Link>
           </nav>
 
-          {/* Action CTAs */}
-          <div className="flex items-center gap-3">
+          {/* Desktop Action CTAs */}
+          <div className="hidden md:flex items-center gap-3">
             {user ? (
               <div className="flex items-center gap-2">
                 <Link
@@ -202,7 +209,146 @@ function Header() {
               </>
             )}
           </div>
+
+          {/* Mobile Right Bar: Quick Action & Hamburger Button */}
+          <div className="flex md:hidden items-center gap-2">
+            {user ? (
+              <Link
+                to={getPortalRoute()}
+                className="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                {user.role} Portal
+              </Link>
+            ) : (
+              <Link
+                to="/patient/login"
+                className="text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="p-2 rounded-lg text-slate-600 hover:text-blue-600 hover:bg-slate-100 focus:outline-none transition-colors border border-slate-200"
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-100 py-3 space-y-3 bg-white animate-in slide-in-from-top-2 duration-150">
+            <nav className="flex flex-col space-y-1">
+              <Link
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-sm font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 flex items-center justify-between transition-colors"
+              >
+                <span>Home</span>
+                <span>🏠</span>
+              </Link>
+              <a
+                href="#specialties"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-between transition-colors"
+              >
+                <span>Specialties</span>
+                <span>🏥</span>
+              </a>
+              <a
+                href="#doctors"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-between transition-colors"
+              >
+                <span>Find Doctors</span>
+                <span>🔍</span>
+              </a>
+              <Link
+                to="/doctor/register"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-teal-700 bg-teal-50 border border-teal-100 hover:bg-teal-100 flex items-center justify-between transition-colors"
+              >
+                <span>Join as Doctor</span>
+                <span>🩺</span>
+              </Link>
+            </nav>
+
+            {/* Mobile Auth / Role Actions */}
+            <div className="pt-3 border-t border-slate-100 space-y-2">
+              {user ? (
+                <div className="space-y-2">
+                  <div className="px-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-600">
+                    Logged in as <strong className="text-slate-900">{user.name || user.email}</strong> ({user.role})
+                  </div>
+                  <Link
+                    to={getPortalRoute()}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full flex items-center justify-center text-sm font-semibold text-blue-700 bg-blue-100/70 hover:bg-blue-200 py-2.5 rounded-lg transition-colors"
+                  >
+                    Go to {user.role} Portal
+                  </Link>
+                  <button
+                    onClick={() => {
+                      clearUser();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-center text-xs font-semibold text-red-600 hover:bg-red-50 py-2 rounded-lg transition-colors border border-red-100"
+                  >
+                    Log Out
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link
+                      to="/patient/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-center px-3 py-2 text-xs font-semibold text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50 text-center"
+                    >
+                      Patient Login
+                    </Link>
+                    <Link
+                      to="/patient/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-center px-3 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-center shadow-sm"
+                    >
+                      Patient Register
+                    </Link>
+                  </div>
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between px-1 text-xs text-slate-500">
+                    <Link
+                      to="/doctor/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="hover:text-teal-600 underline underline-offset-2"
+                    >
+                      Doctor Login
+                    </Link>
+                    <Link
+                      to="/admin/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="hover:text-purple-600 underline underline-offset-2"
+                    >
+                      Admin Login
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
