@@ -26,7 +26,6 @@ function PatientRegister() {
     phone: "",
     gender: "Male",
     age: "",
-    dob: "",
     bloodGroup: "O+",
     disease: "General Consultation",
     address: "",
@@ -43,16 +42,10 @@ function PatientRegister() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      const updated = { ...prev, [name]: value };
-      if (name === "dob" && value) {
-        const birthYear = new Date(value).getFullYear();
-        if (!isNaN(birthYear)) {
-          updated.age = String(Math.max(1, new Date().getFullYear() - birthYear));
-        }
-      }
-      return updated;
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
     if (formError) setFormError("");
   };
 
@@ -61,8 +54,14 @@ function PatientRegister() {
     setFormError("");
     setSuccessMessage("");
 
-    if (!formData.fullName.trim() || !formData.email.trim() || !formData.password.trim()) {
-      setFormError("Please fill in all required fields (Full Name, Email, and Password).");
+    if (
+      !formData.fullName.trim() ||
+      !formData.email.trim() ||
+      !formData.password.trim()
+    ) {
+      setFormError(
+        "Please fill in all required fields (Full Name, Email, and Password).",
+      );
       return;
     }
 
@@ -79,19 +78,10 @@ function PatientRegister() {
     setSubmitting(true);
 
     try {
-      let patientAge = formData.age;
-      if (!patientAge && formData.dob) {
-        const birthYear = new Date(formData.dob).getFullYear();
-        if (!isNaN(birthYear)) {
-          patientAge = String(Math.max(1, new Date().getFullYear() - birthYear));
-        }
-      }
-      patientAge = patientAge ? String(patientAge) : "25";
+      const patientAge = formData.age ? String(formData.age) : "25";
 
-      // Map to the exact fields accepted by the backend Patient model:
-      // { name, email, phone, password, disease, age, gender, bloodGroup }
       const payload = {
-        name: formData.fullName,           // schema field: "name"
+        name: formData.fullName, // schema field: "name"
         email: formData.email,
         password: formData.password,
         phone: Number(formData.phone) || undefined,
@@ -102,7 +92,9 @@ function PatientRegister() {
       };
 
       await patientRegister(payload);
-      setSuccessMessage("Patient account created successfully! Redirecting to patient login...");
+      setSuccessMessage(
+        "Patient account created successfully! Redirecting to patient login...",
+      );
 
       setTimeout(() => {
         navigate("/patient/login");
@@ -138,7 +130,11 @@ function PatientRegister() {
                   stroke="currentColor"
                   className="w-5 h-5"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
                 </svg>
               </div>
               <div>
@@ -155,28 +151,45 @@ function PatientRegister() {
               Patient Registration
             </h2>
             <p className="text-sm text-blue-200 mb-6 leading-relaxed">
-              Create your unified patient profile to schedule specialist consultations, check queue status, and store medical reports safely.
+              Create your unified patient profile to schedule specialist
+              consultations, check queue status, and store medical reports
+              safely.
             </p>
 
             <div className="space-y-3 text-xs">
               <div className="p-3 rounded-xl bg-white/10 border border-white/20">
-                <p className="font-semibold text-white">📅 Easy OPD Appointments</p>
-                <p className="text-blue-200 mt-1">Book slots with 50+ specialists in real-time.</p>
+                <p className="font-semibold text-white">
+                  📅 Easy OPD Appointments
+                </p>
+                <p className="text-blue-200 mt-1">
+                  Book slots with 50+ specialists in real-time.
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-white/10 border border-white/20">
-                <p className="font-semibold text-white">📂 Digital Medical Records</p>
-                <p className="text-blue-200 mt-1">Never lose prescriptions, vitals, or lab tests.</p>
+                <p className="font-semibold text-white">
+                  📂 Digital Medical Records
+                </p>
+                <p className="text-blue-200 mt-1">
+                  Never lose prescriptions, vitals, or lab tests.
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-white/10 border border-white/20">
-                <p className="font-semibold text-white">⚡ Emergency Quick Access</p>
-                <p className="text-blue-200 mt-1">Save emergency contacts for fast hospital triage.</p>
+                <p className="font-semibold text-white">
+                  ⚡ Emergency Quick Access
+                </p>
+                <p className="text-blue-200 mt-1">
+                  Save emergency contacts for fast hospital triage.
+                </p>
               </div>
             </div>
           </div>
 
           <div className="relative z-10 pt-6 mt-6 border-t border-blue-700/50 text-xs text-blue-200">
             <span>Already have a patient account? </span>
-            <Link to="/patient/login" className="font-semibold text-white hover:text-blue-200 underline">
+            <Link
+              to="/patient/login"
+              className="font-semibold text-white hover:text-blue-200 underline"
+            >
               Sign In here
             </Link>
           </div>
@@ -187,7 +200,9 @@ function PatientRegister() {
           <div>
             <div className="mb-6 flex items-center justify-between flex-wrap gap-2">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">Create Patient Account</h1>
+                <h1 className="text-2xl font-bold text-slate-900">
+                  Create Patient Account
+                </h1>
                 <p className="text-sm text-slate-500">
                   Fill in your health details to complete your patient profile
                 </p>
@@ -201,7 +216,11 @@ function PatientRegister() {
             {formError && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 flex items-center justify-between">
                 <span>{formError}</span>
-                <button type="button" onClick={() => setFormError("")} className="text-red-400 hover:text-red-700">
+                <button
+                  type="button"
+                  onClick={() => setFormError("")}
+                  className="text-red-400 hover:text-red-700"
+                >
                   ✕
                 </button>
               </div>
@@ -331,36 +350,31 @@ function PatientRegister() {
               </div>
 
               {/* Patient Health Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Blood Group</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Blood Group
+                  </label>
                   <select
                     name="bloodGroup"
                     value={formData.bloodGroup}
                     onChange={handleChange}
                     className="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all bg-white"
                   >
-                    {["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"].map((bg) => (
-                      <option key={bg} value={bg}>
-                        {bg}
-                      </option>
-                    ))}
+                    {["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"].map(
+                      (bg) => (
+                        <option key={bg} value={bg}>
+                          {bg}
+                        </option>
+                      ),
+                    )}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Date of Birth</label>
-                  <input
-                    type="date"
-                    name="dob"
-                    value={formData.dob}
-                    onChange={handleChange}
-                    className="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Age</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Age
+                  </label>
                   <input
                     type="number"
                     name="age"
@@ -375,7 +389,8 @@ function PatientRegister() {
 
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Reason for Visit / Condition <span className="text-red-500">*</span>
+                    Reason for Visit / Condition{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -387,30 +402,6 @@ function PatientRegister() {
                     required
                   />
                 </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Emergency Contact</label>
-                  <input
-                    type="tel"
-                    name="emergencyContact"
-                    value={formData.emergencyContact}
-                    onChange={handleChange}
-                    placeholder="+1 (555) 999-1111"
-                    className="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all placeholder:text-slate-400"
-                  />
-                </div>
-
-                <div className="sm:col-span-3">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Residential Address</label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    placeholder="Apartment, Street, City, State"
-                    className="w-full text-sm px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all placeholder:text-slate-400"
-                  />
-                </div>
               </div>
 
               <div className="pt-2">
@@ -419,13 +410,13 @@ function PatientRegister() {
                   disabled={submitting}
                   className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200 transition-all disabled:opacity-70"
                 >
-                  {submitting ? "Registering Patient..." : "Create Patient Account"}
+                  {submitting
+                    ? "Registering Patient..."
+                    : "Create Patient Account"}
                 </button>
               </div>
             </form>
           </div>
-
-
         </div>
       </div>
     </div>

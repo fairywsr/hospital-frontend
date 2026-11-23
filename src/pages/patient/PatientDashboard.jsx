@@ -123,12 +123,18 @@ function PatientDashboard() {
             </p>
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-slate-100">
+        <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+          <Link
+            to="/patient/profile?edit=true"
+            className="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
+          >
+            ✏️ Edit Profile →
+          </Link>
           <Link
             to="/patient/profile"
-            className="text-xs font-semibold text-blue-600 hover:underline"
+            className="text-xs font-medium text-slate-500 hover:text-slate-800"
           >
-            Edit Profile →
+            View Full Profile
           </Link>
         </div>
       </div>

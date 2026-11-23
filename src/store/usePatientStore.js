@@ -110,6 +110,10 @@ export const usePatientStore = create((set, get) => ({
       // Controller returns { patient } after update
       const updated = data.patient || data.user;
       set({ loading: false, user: updated });
+      if (updated) {
+        const currentAuth = useAuthStore.getState().user;
+        useAuthStore.getState().setUser({ ...currentAuth, ...updated });
+      }
       return data;
     } catch (error) {
       set({

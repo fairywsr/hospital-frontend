@@ -30,6 +30,7 @@ import AdminLayout from "./components/layouts/AdminLayout";
 import PatientDashboard from "./pages/patient/PatientDashboard";
 import PatientAppointments from "./pages/patient/PatientAppointments";
 import BookAppointment from "./pages/patient/BookAppointment";
+import PatientProfile from "./pages/patient/PatientProfile";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
@@ -93,7 +94,7 @@ function App() {
           <Route path="dashboard" element={<PatientDashboard />} />
           <Route path="book-appointment" element={<BookAppointment />} />
           <Route path="appointments" element={<PatientAppointments />} />
-          <Route path="profile" element={<PatientDashboard />} />
+          <Route path="profile" element={<PatientProfile />} />
         </Route>
       </Route>
 
