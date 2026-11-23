@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../store/useAuthStore";
+import Unauthorized from "../../pages/Unauthorized";
 
 /**
  * ProtectedRoute Component
@@ -14,20 +15,25 @@ export function ProtectedRoute({ allowedRoles = [] }) {
   // 1. Not authenticated -> Redirect to dedicated login page based on target path or role
   if (!user) {
     let targetLogin = "/patient/login";
-    if (location.pathname.startsWith("/admin") || allowedRoles.includes("Admin")) {
+    const path = location.pathname.toLowerCase();
+    const normalizedRoles = allowedRoles.map((r) => r.toLowerCase());
+
+    if (path.startsWith("/admin") || normalizedRoles.includes("admin")) {
       targetLogin = "/admin/login";
-    } else if (location.pathname.startsWith("/doctor") || allowedRoles.includes("Doctor")) {
+    } else if (path.startsWith("/doctor") || normalizedRoles.includes("doctor")) {
       targetLogin = "/doctor/login";
-    } else if (location.pathname.startsWith("/patient") || allowedRoles.includes("Patient")) {
+    } else if (path.startsWith("/patient") || normalizedRoles.includes("patient")) {
       targetLogin = "/patient/login";
     }
 
     return <Navigate to={targetLogin} state={{ from: location }} replace />;
   }
 
-  // 2. Role not authorized -> Redirect to unauthorized page
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/unauthorized" replace />;
+  // 2. Role not authorized -> Render Unauthorized component
+  const userRole = (user.role || "").toLowerCase();
+  const normalizedAllowed = allowedRoles.map((r) => r.toLowerCase());
+  if (normalizedAllowed.length > 0 && !normalizedAllowed.includes(userRole)) {
+    return <Unauthorized />;
   }
 
   // 3. Authorized -> Render child routes

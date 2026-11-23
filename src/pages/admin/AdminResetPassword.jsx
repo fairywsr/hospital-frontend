@@ -1,10 +1,23 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, Navigate } from "react-router-dom";
 import { useAdminStore } from "../../store/useAdminStore";
+import { useAuthStore } from "../../store/useAuthStore";
+import Unauthorized from "../Unauthorized";
 
 function AdminResetPassword() {
   const { token } = useParams();
   const navigate = useNavigate();
+  const authUser = useAuthStore((state) => state.user);
+
+  // If already logged in as Patient or Doctor, render Unauthorized component
+  if (authUser && authUser.role && authUser.role.toLowerCase() !== "admin") {
+    return <Unauthorized />;
+  }
+
+  // If already logged in as Admin, redirect to dashboard
+  if (authUser && authUser.role && authUser.role.toLowerCase() === "admin") {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
 
   const [formData, setFormData] = useState({
     password: "",

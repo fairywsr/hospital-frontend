@@ -33,7 +33,7 @@ function Header() {
   }, []);
 
   const getPortalRoute = () => {
-    if (!user) return "/login";
+    if (!user) return "/patient/login";
     if (user.role === "Admin") return "/admin/dashboard";
     if (user.role === "Doctor") return "/doctor/dashboard";
     return "/patient/dashboard";

@@ -1,11 +1,25 @@
 import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useAdminStore } from "../../store/useAdminStore";
+import { useAuthStore } from "../../store/useAuthStore";
+import Unauthorized from "../Unauthorized";
 
 function AdminLogin() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
+
+  const authUser = useAuthStore((state) => state.user);
+
+  // If already logged in as Patient or Doctor, render Unauthorized component
+  if (authUser && authUser.role && authUser.role.toLowerCase() !== "admin") {
+    return <Unauthorized />;
+  }
+
+  // If already logged in as Admin, redirect to dashboard
+  if (authUser && authUser.role && authUser.role.toLowerCase() === "admin") {
+    return <Navigate to={from || "/admin/dashboard"} replace />;
+  }
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,12 +32,24 @@ function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError("");
+
+    // Check if authenticated as a different role
+    const currentUser = useAuthStore.getState().user;
+    if (currentUser && currentUser.role && currentUser.role.toLowerCase() !== "admin") {
+      navigate("/unauthorized", { replace: true });
+      return;
+    }
+
     setSubmitting(true);
 
     try {
       await adminLogin({ email, password });
       navigate(from || "/admin/dashboard", { replace: true });
     } catch (err) {
+      if (err?.response?.status === 403) {
+        navigate("/unauthorized", { replace: true });
+        return;
+      }
       setFormError(
         err?.response?.data?.message ||
         err?.message ||

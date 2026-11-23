@@ -1,9 +1,22 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { usePatientStore } from "../../store/usePatientStore";
+import { useAuthStore } from "../../store/useAuthStore";
+import Unauthorized from "../Unauthorized";
 
 function PatientRegister() {
   const navigate = useNavigate();
+  const authUser = useAuthStore((state) => state.user);
+
+  // If already logged in as Doctor or Admin, render Unauthorized component
+  if (authUser && authUser.role && authUser.role.toLowerCase() !== "patient") {
+    return <Unauthorized />;
+  }
+
+  // If already logged in as Patient, redirect to dashboard
+  if (authUser && authUser.role && authUser.role.toLowerCase() === "patient") {
+    return <Navigate to="/patient/dashboard" replace />;
+  }
 
   const [formData, setFormData] = useState({
     fullName: "",

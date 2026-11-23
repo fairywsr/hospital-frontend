@@ -1,19 +1,30 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
 function Unauthorized() {
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const clearUser = useAuthStore((state) => state.clearUser);
 
   const getDashboardPath = () => {
-    if (!user) return "/login";
-    if (user.role === "Admin") return "/admin/dashboard";
-    if (user.role === "Doctor") return "/doctor/dashboard";
+    if (!user) return "/patient/login";
+    const role = (user.role || "").toLowerCase();
+    if (role === "admin") return "/admin/dashboard";
+    if (role === "doctor") return "/doctor/dashboard";
     return "/patient/dashboard";
   };
 
+  const handleSwitchAccount = () => {
+    clearUser();
+    try {
+      localStorage.removeItem("carepulse-auth-storage");
+    } catch {}
+    navigate("/patient/login");
+  };
+
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-slate-50 px-4">
+    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-slate-50 px-4 py-8">
       <div className="max-w-md w-full bg-white border border-slate-200 rounded-2xl p-8 text-center shadow-lg">
         <div className="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-7 h-7">
@@ -22,10 +33,14 @@ function Unauthorized() {
         </div>
         <h1 className="text-xl font-bold text-slate-900 mb-2">Access Denied (403)</h1>
         <p className="text-sm text-slate-600 mb-6 leading-relaxed">
-          You do not have the required role permissions to view this section.
-          {user ? ` You are currently signed in as a ${user.role}.` : ""}
+          You do not have permission to access this section or portal.
+          {user ? (
+            <span className="block mt-1 font-medium text-slate-800">
+              You are currently signed in as a <span className="text-blue-600 font-semibold">{user.role}</span>.
+            </span>
+          ) : ""}
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
           <Link
             to={getDashboardPath()}
             className="inline-flex justify-center items-center py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-all"
@@ -39,6 +54,18 @@ function Unauthorized() {
             Go to Home
           </Link>
         </div>
+        {user && (
+          <div className="pt-4 border-t border-slate-100">
+            <p className="text-xs text-slate-500 mb-2">Need to sign in as a different role?</p>
+            <button
+              type="button"
+              onClick={handleSwitchAccount}
+              className="text-xs font-semibold text-red-600 hover:text-red-700 hover:underline"
+            >
+              Sign Out & Switch Account
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,9 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
 import Unauthorized from "./pages/Unauthorized";
 
 // Dedicated Role-Specific Login & Registration Pages
@@ -44,19 +41,18 @@ import AdminPatients from "./pages/admin/AdminPatients";
 function App() {
   return (
     <Routes>
-      {/* 1. Public Marketing & Authentication Routes */}
+      {/* 1. Public Marketing & Base Routes */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* Public-only routes: redirect logged-in users to their respective portal */}
-        <Route element={<PublicRoute />}>
-          {/* Main Portal Directory Hubs */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+        {/* Legacy redirect routes */}
+        <Route path="/login" element={<Navigate to="/patient/login" replace />} />
+        <Route path="/register" element={<Navigate to="/patient/register" replace />} />
+        <Route path="/forgot-password" element={<Navigate to="/patient/forgot-password" replace />} />
 
-          {/* Dedicated Separate Patient Auth Views */}
+        {/* Dedicated Separate Patient Auth Views */}
+        <Route element={<PublicRoute targetRole="Patient" />}>
           <Route path="/patient/login" element={<PatientLogin />} />
           <Route path="/patient/register" element={<PatientRegister />} />
           <Route path="/patient/forgot-password" element={<PatientForgotPassword />} />
@@ -65,8 +61,10 @@ function App() {
           <Route path="/register/patient" element={<Navigate to="/patient/register" replace />} />
           <Route path="/forgot-password/patient" element={<Navigate to="/patient/forgot-password" replace />} />
           <Route path="/reset-password/:token" element={<PatientResetPassword />} />
+        </Route>
 
-          {/* Dedicated Separate Doctor Auth Views */}
+        {/* Dedicated Separate Doctor Auth Views */}
+        <Route element={<PublicRoute targetRole="Doctor" />}>
           <Route path="/doctor/login" element={<DoctorLogin />} />
           <Route path="/doctor/register" element={<DoctorRegister />} />
           <Route path="/doctor/forgot-password" element={<DoctorForgotPassword />} />
@@ -74,8 +72,10 @@ function App() {
           <Route path="/login/doctor" element={<Navigate to="/doctor/login" replace />} />
           <Route path="/register/doctor" element={<Navigate to="/doctor/register" replace />} />
           <Route path="/forgot-password/doctor" element={<Navigate to="/doctor/forgot-password" replace />} />
+        </Route>
 
-          {/* Dedicated Separate Admin Auth Views */}
+        {/* Dedicated Separate Admin Auth Views */}
+        <Route element={<PublicRoute targetRole="Admin" />}>
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/register" element={<AdminRegister />} />
           <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />

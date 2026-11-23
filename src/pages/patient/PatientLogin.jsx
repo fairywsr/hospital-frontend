@@ -1,11 +1,25 @@
 import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { usePatientStore } from "../../store/usePatientStore";
+import { useAuthStore } from "../../store/useAuthStore";
+import Unauthorized from "../Unauthorized";
 
 function PatientLogin() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
+
+  const authUser = useAuthStore((state) => state.user);
+
+  // If already logged in as Doctor or Admin, render Unauthorized component
+  if (authUser && authUser.role && authUser.role.toLowerCase() !== "patient") {
+    return <Unauthorized />;
+  }
+
+  // If already logged in as Patient, redirect to dashboard
+  if (authUser && authUser.role && authUser.role.toLowerCase() === "patient") {
+    return <Navigate to={from || "/patient/dashboard"} replace />;
+  }
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,12 +32,24 @@ function PatientLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError("");
+
+    // Check if authenticated as a different role
+    const currentUser = useAuthStore.getState().user;
+    if (currentUser && currentUser.role && currentUser.role.toLowerCase() !== "patient") {
+      navigate("/unauthorized", { replace: true });
+      return;
+    }
+
     setSubmitting(true);
 
     try {
       await patientLogin({ email, password });
       navigate(from || "/patient/dashboard", { replace: true });
     } catch (err) {
+      if (err?.response?.status === 403) {
+        navigate("/unauthorized", { replace: true });
+        return;
+      }
       setFormError(
         err?.response?.data?.message ||
         err?.message ||

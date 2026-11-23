@@ -1,8 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useDoctorStore } from "../../store/userDoctorStore";
+import { useAuthStore } from "../../store/useAuthStore";
+import Unauthorized from "../Unauthorized";
 
 function DoctorForgotPassword() {
+  const authUser = useAuthStore((state) => state.user);
+
+  // If already logged in as Patient or Admin, render Unauthorized component
+  if (authUser && authUser.role && authUser.role.toLowerCase() !== "doctor") {
+    return <Unauthorized />;
+  }
+
+  // If already logged in as Doctor, redirect to dashboard
+  if (authUser && authUser.role && authUser.role.toLowerCase() === "doctor") {
+    return <Navigate to="/doctor/dashboard" replace />;
+  }
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
   const [formError, setFormError] = useState("");
