@@ -89,15 +89,36 @@ function Header() {
 
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-            <Link to="/" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
+            <Link
+              to="/"
+              className={`${
+                location.pathname === "/"
+                  ? "text-blue-600 font-semibold"
+                  : "text-slate-600 hover:text-blue-600"
+              } transition-colors`}
+            >
               Home
             </Link>
-            <a href="#specialties" className="hover:text-blue-600 transition-colors">
+            <Link
+              to="/specialties"
+              className={`${
+                location.pathname.startsWith("/specialties")
+                  ? "text-blue-600 font-semibold"
+                  : "text-slate-600 hover:text-blue-600"
+              } transition-colors`}
+            >
               Specialties
-            </a>
-            <a href="#doctors" className="hover:text-blue-600 transition-colors">
+            </Link>
+            <Link
+              to="/find-doctor"
+              className={`${
+                location.pathname.startsWith("/find-doctor") || location.pathname.startsWith("/doctors")
+                  ? "text-blue-600 font-semibold"
+                  : "text-slate-600 hover:text-blue-600"
+              } transition-colors`}
+            >
               Find Doctors
-            </a>
+            </Link>
             <Link
               to="/doctor/register"
               className="hover:text-teal-600 transition-colors font-medium text-teal-700 bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-100"
@@ -255,27 +276,39 @@ function Header() {
               <Link
                 to="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-sm font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 flex items-center justify-between transition-colors"
+                className={`px-3 py-2 rounded-lg text-sm font-semibold flex items-center justify-between transition-colors ${
+                  location.pathname === "/"
+                    ? "text-blue-600 bg-blue-50"
+                    : "text-slate-700 hover:bg-slate-50"
+                }`}
               >
                 <span>Home</span>
                 <span>🏠</span>
               </Link>
-              <a
-                href="#specialties"
+              <Link
+                to="/specialties"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-between transition-colors"
+                className={`px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-between transition-colors ${
+                  location.pathname.startsWith("/specialties")
+                    ? "text-blue-600 bg-blue-50 font-semibold"
+                    : "text-slate-700 hover:bg-slate-50"
+                }`}
               >
                 <span>Specialties</span>
                 <span>🏥</span>
-              </a>
-              <a
-                href="#doctors"
+              </Link>
+              <Link
+                to="/find-doctor"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 flex items-center justify-between transition-colors"
+                className={`px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-between transition-colors ${
+                  location.pathname.startsWith("/find-doctor") || location.pathname.startsWith("/doctors")
+                    ? "text-blue-600 bg-blue-50 font-semibold"
+                    : "text-slate-700 hover:bg-slate-50"
+                }`}
               >
                 <span>Find Doctors</span>
                 <span>🔍</span>
-              </a>
+              </Link>
               <Link
                 to="/doctor/register"
                 onClick={() => setMobileMenuOpen(false)}

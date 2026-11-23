@@ -166,24 +166,34 @@ function Home() {
       </section>
 
       {/* 3. Medical Specialties / Departments */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-blue-600 font-semibold text-xs tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-            Clinical Excellence
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3 tracking-tight">
-            Our Medical Departments
-          </h2>
-          <p className="text-slate-600 text-base mt-3">
-            State-of-the-art facilities backed by multi-disciplinary medical teams committed to quality patient outcomes.
-          </p>
+      <section id="specialties" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
+          <div className="max-w-2xl">
+            <span className="text-blue-600 font-semibold text-xs tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+              Clinical Excellence
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3 tracking-tight">
+              Our Medical Departments
+            </h2>
+            <p className="text-slate-600 text-base mt-2">
+              State-of-the-art facilities backed by multi-disciplinary medical teams committed to quality patient outcomes.
+            </p>
+          </div>
+          <Link
+            to="/specialties"
+            className="mt-4 sm:mt-0 text-sm font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 shrink-0"
+          >
+            <span>Explore All Specialties</span>
+            <span>→</span>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {specialties.map((dept, index) => (
-            <div
+            <Link
+              to={`/find-doctor?specialty=${encodeURIComponent(dept.name.split(" ")[0])}`}
               key={index}
-              className="bg-white rounded-2xl p-7 border border-slate-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer"
+              className="bg-white rounded-2xl p-7 border border-slate-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all group cursor-pointer block"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white flex items-center justify-center transition-colors">
@@ -203,7 +213,7 @@ function Home() {
                 <span>View Department Specialists</span>
                 <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -299,7 +309,7 @@ function Home() {
       </section>
 
       {/* 5. Featured Specialists / Top Doctors */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="doctors" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
           <div>
             <span className="text-blue-600 font-semibold text-xs tracking-wider uppercase bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
@@ -312,9 +322,13 @@ function Home() {
               Book consultations with our leading physicians and department heads.
             </p>
           </div>
-          <button className="mt-4 sm:mt-0 text-sm font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1">
-            Browse All Doctors →
-          </button>
+          <Link
+            to="/find-doctor"
+            className="mt-4 sm:mt-0 text-sm font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
+          >
+            <span>Browse All Doctors</span>
+            <span>→</span>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

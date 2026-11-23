@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
+import Specialties from "./pages/Specialties";
+import FindDoctor from "./pages/FindDoctor";
 import Unauthorized from "./pages/Unauthorized";
 
 // Dedicated Role-Specific Login & Registration Pages
@@ -45,6 +47,9 @@ function App() {
       {/* 1. Public Marketing & Base Routes */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/specialties" element={<Specialties />} />
+        <Route path="/find-doctor" element={<FindDoctor />} />
+        <Route path="/doctors" element={<Navigate to="/find-doctor" replace />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* Legacy redirect routes */}

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
@@ -102,38 +103,38 @@ function Footer() {
           {/* Column 2: Departments */}
           <div>
             <h3 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">
-              Departments
+              Specialties
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Cardiology
-                </a>
+                <Link to="/specialties" className="hover:text-blue-400 transition-colors">
+                  Cardiology & Heart
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link to="/specialties" className="hover:text-blue-400 transition-colors">
                   Neurology & Brain
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link to="/specialties" className="hover:text-blue-400 transition-colors">
                   Pediatrics & Neonatal
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link to="/specialties" className="hover:text-blue-400 transition-colors">
                   Orthopedics & Spine
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Oncology & Chemotherapy
-                </a>
+                <Link to="/specialties" className="hover:text-blue-400 transition-colors">
+                  Oncology & Cancer
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Emergency & Trauma Care
-                </a>
+                <Link to="/specialties" className="hover:text-blue-400 transition-colors text-blue-400 font-medium">
+                  View All Specialties →
+                </Link>
               </li>
             </ul>
           </div>
@@ -145,34 +146,29 @@ function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link to="/patient/book-appointment" className="hover:text-blue-400 transition-colors">
                   Book an Appointment
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link to="/find-doctor" className="hover:text-blue-400 transition-colors">
                   Find a Doctor
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link to="/patient/dashboard" className="hover:text-blue-400 transition-colors">
                   Patient Health Portal
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Lab & Diagnostic Reports
-                </a>
+                <Link to="/specialties" className="hover:text-blue-400 transition-colors">
+                  Diagnostics & Labs
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Insurance & Billing Info
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Patient Rights & Policies
-                </a>
+                <Link to="/doctor/register" className="hover:text-teal-400 transition-colors">
+                  Join Medical Staff
+                </Link>
               </li>
             </ul>
           </div>

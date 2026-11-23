@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppointmentStore } from "../../store/useAppointmentStore";
 import { useDoctorStore } from "../../store/userDoctorStore";
 
@@ -13,10 +13,12 @@ const STATUS_COLORS = {
 
 function BookAppointment() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const preselectedDoctor = searchParams.get("doctor");
   const { createNewAppointment, loading, error } = useAppointmentStore();
   const { getAllDoctors, allDoctors } = useDoctorStore();
   const [form, setForm] = useState({
-    doctor: "",
+    doctor: preselectedDoctor || "",
     appointmentDate: "",
     reason: "",
   });
@@ -26,6 +28,12 @@ function BookAppointment() {
   useEffect(() => {
     getAllDoctors();
   }, [getAllDoctors]);
+
+  useEffect(() => {
+    if (preselectedDoctor) {
+      setForm((prev) => ({ ...prev, doctor: preselectedDoctor }));
+    }
+  }, [preselectedDoctor]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));

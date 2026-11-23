@@ -55,8 +55,8 @@ function HeroSection() {
                 Book Appointment
               </Link>
 
-              <a
-                href="#doctors"
+              <Link
+                to="/find-doctor"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-semibold px-6 py-3.5 rounded-xl border border-slate-300 hover:border-slate-400 shadow-sm transition-all"
               >
                 <svg
@@ -74,7 +74,7 @@ function HeroSection() {
                   />
                 </svg>
                 Find Doctors
-              </a>
+              </Link>
             </div>
 
             {/* Quick Stats Grid */}
