@@ -9,10 +9,7 @@ export const useDoctorStore = create((set) => ({
   loading: false,
   error: null,
 
-  // ── Register ─────────────────────────────────────────────────────────────────
-  // POST /doctor/register-doctor
-  // Body: { name, email, password, phone, specilization, license, age, experience, gender }
-  // Controller returns { success, message, doctor }
+  // ── Register ─────────
   registerDoctor: async (doctorData) => {
     try {
       set({ loading: true, error: null });
@@ -22,29 +19,41 @@ export const useDoctorStore = create((set) => ({
         doctorData,
       );
 
+      if (data?.success === false) {
+        throw new Error(data?.message || "Registration failed");
+      }
+
       set({ loading: false, doctor: data.doctor });
       return data;
     } catch (error) {
       set({
-        error: error?.response?.data?.message || "Registration failed",
+        error:
+          error?.response?.data?.message ||
+          error?.message ||
+          "Registration failed",
         loading: false,
       });
       throw error;
     }
   },
 
-  // ── Login ────────────────────────────────────────────────────────────────────
-  // POST /doctor/login
-  // Body: { email, password }
-  // Controller calls sendToken → returns { success, message, doctor, token }
+  // ── Login ──────────────────
   loginDoctor: async (doctorData) => {
     try {
       set({ loading: true, error: null });
 
       const { data } = await axiosInstance.post("doctor/login", doctorData);
 
+      if (data?.success === false || !data?.success) {
+        throw new Error(data?.message || "Invalid doctor credentials");
+      }
+
       const doctorUser = data.doctor || data.user;
-      set({ loading: false, doctor: doctorUser });
+      if (!doctorUser) {
+        throw new Error(data?.message || "Doctor credentials not found");
+      }
+
+      set({ loading: false, doctor: doctorUser, error: null });
 
       useAuthStore.getState().setUser({
         ...doctorUser,
@@ -53,17 +62,19 @@ export const useDoctorStore = create((set) => ({
 
       return data;
     } catch (error) {
+      const errorMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Invalid doctor credentials. Please check your email and password.";
       set({
-        error: error?.response?.data?.message || "Login failed",
+        error: errorMsg,
         loading: false,
       });
       throw error;
     }
   },
 
-  // ── Logout ───────────────────────────────────────────────────────────────────
-  // POST /doctor/logout  (clears the httpOnly cookie server-side)
-  // Controller returns { success, message }
+  // ── Logout ──────
   logoutDoctor: async () => {
     try {
       set({ loading: true, error: null });
@@ -85,9 +96,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Doctor Profile ───────────────────────────────────────────────────────────
-  // GET /doctor/profile/:id
-  // Controller returns { success, message, Doctor }  (capital D key)
+  // ── Doctor Profile ─────────
   doctorProfile: async (id) => {
     try {
       set({ loading: true, error: null });
@@ -107,10 +116,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Edit Profile ─────────────────────────────────────────────────────────────
-  // PUT /doctor/update-profile/:id
-  // Body: any updatable doctor fields
-  // Controller returns { success, message, doctor }
+  // ── Edit Profile ──────────────────
   editProfile: async (id, doctorData) => {
     try {
       set({ loading: true, error: null });
@@ -131,9 +137,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Delete Profile ───────────────────────────────────────────────────────────
-  // DELETE /doctor/delete-profile/:id
-  // Controller returns { success, message }
+  // ── Delete Profile ───────
   deleteProfile: async (id) => {
     try {
       set({ loading: true, error: null });
@@ -154,10 +158,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Reset Password Request ────────────────────────────────────────────────────
-  // PUT /doctor/reset-password-request
-  // Body: { email }
-  // Controller sends a reset-link email; returns { success, message }
+  // ── Reset Password Request ─────────────
   resetPasswordRequest: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -179,10 +180,8 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Reset Password (via token) ────────────────────────────────────────────────
-  // PUT /doctor/reset-password/:token
-  // Body: { password, confirmPassword }
-  // Controller returns { success, message }
+  // ── Reset Password (via token) ────
+
   resetPassword: async (token, userData) => {
     try {
       set({ loading: true, error: null });
@@ -203,11 +202,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Update Password (while logged in) ────────────────────────────────────────
-  // PUT /doctor/update-password
-  // Body: { oldPassword, newPassword, confirmPassword }
-  // Controller reads req.user.id from auth middleware
-  // Returns sendToken → { success, message, doctor, token }
+  // ── Update Password (while logged in) ─────
   updatePassword: async (userData) => {
     try {
       set({ loading: true, error: null });
@@ -228,9 +223,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Get All Doctors (Admin) ───────────────────────────────────────────────────
-  // GET /doctor/all-doctors
-  // Controller returns { success, message, doctors }
+  // ── Get All Doctors (Admin) ─────────
   getAllDoctors: async () => {
     try {
       set({ loading: true, error: null });
@@ -248,9 +241,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Approve Doctor (Admin) ────────────────────────────────────────────────────
-  // PUT /doctor/approve-doctor/:id
-  // Controller sets status → "Approved"; returns { success, message, doctor }
+  // ── Approve Doctor (Admin) ────────
   approveDoctor: async (id) => {
     try {
       set({ loading: true, error: null });
@@ -276,9 +267,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Reject Doctor (Admin) ─────────────────────────────────────────────────────
-  // PUT /doctor/reject-doctor/:id
-  // Controller sets status → "Rejected"; returns { success, message }
+  // ── Reject Doctor (Admin) ─────────────
   rejectDoctor: async (id) => {
     try {
       set({ loading: true, error: null });
@@ -303,9 +292,7 @@ export const useDoctorStore = create((set) => ({
     }
   },
 
-  // ── Pending Doctors (Admin) ───────────────────────────────────────────────────
-  // GET /doctor/pending-doctors
-  // Controller returns { pendingDoctors: [...] }
+  // ── Pending Doctors (Admin) ──────────
   getPendingDoctors: async () => {
     try {
       set({ loading: true, error: null });

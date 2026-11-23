@@ -21,7 +21,13 @@ function DoctorLogin() {
     setSubmitting(true);
 
     try {
-      await doctorLogin({ email, password });
+      const res = await doctorLogin({ email, password });
+      if (res && res.success === false) {
+        setFormError(
+          res.message || "Invalid doctor credentials. Please check your email and password."
+        );
+        return;
+      }
       navigate(from || "/doctor/dashboard", { replace: true });
     } catch (err) {
       setFormError(

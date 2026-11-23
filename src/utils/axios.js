@@ -2,8 +2,9 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL:
-    "https://hospital-backend-vw9e.onrender.com/api/v1/" ||
-    import.meta.env.BACKEND_URL,
+    import.meta.env.VITE_BACKEND_URL ||
+    import.meta.env.BACKEND_URL ||
+    "https://hospital-backend-vw9e.onrender.com/api/v1/",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",

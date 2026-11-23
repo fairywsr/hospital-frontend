@@ -15,7 +15,7 @@ function BookAppointment() {
   const navigate = useNavigate();
   const { createNewAppointment, loading, error } = useAppointmentStore();
   const { getAllDoctors, allDoctors } = useDoctorStore();
-
+  console.log(allDoctors, "line 18");
   const [form, setForm] = useState({
     doctor: "",
     appointmentDate: "",
