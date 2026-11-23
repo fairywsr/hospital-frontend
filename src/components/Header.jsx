@@ -51,7 +51,8 @@ function Header() {
             </span>
             <span className="hidden sm:inline text-blue-300">|</span>
             <span className="hidden sm:inline">
-              Helpline: <strong className="text-white">+1 (800) 555-0199</strong>
+              Helpline:{" "}
+              <strong className="text-white">+1 (800) 555-0199</strong>
             </span>
           </div>
           <div className="flex items-center gap-3 text-xs text-blue-200">
@@ -74,7 +75,11 @@ function Header() {
                 stroke="currentColor"
                 className="w-6 h-6"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
               </svg>
             </div>
             <div>
@@ -112,7 +117,8 @@ function Header() {
             <Link
               to="/find-doctor"
               className={`${
-                location.pathname.startsWith("/find-doctor") || location.pathname.startsWith("/doctors")
+                location.pathname.startsWith("/find-doctor") ||
+                location.pathname.startsWith("/doctors")
                   ? "text-blue-600 font-semibold"
                   : "text-slate-600 hover:text-blue-600"
               } transition-colors`}
@@ -128,6 +134,7 @@ function Header() {
           </nav>
 
           {/* Desktop Action CTAs */}
+
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <div className="flex items-center gap-2">
@@ -137,6 +144,7 @@ function Header() {
                 >
                   <span>Go to {user.role} Portal</span>
                 </Link>
+
                 <button
                   onClick={() => clearUser()}
                   className="text-xs font-medium text-slate-500 hover:text-red-600 px-2 py-1.5"
@@ -146,87 +154,19 @@ function Header() {
               </div>
             ) : (
               <>
-                {/* Sign In Dropdown */}
-                <div className="relative" ref={loginRef}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLoginMenuOpen((prev) => !prev);
-                      setRegisterMenuOpen(false);
-                    }}
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 hover:text-blue-600 border border-slate-300 hover:border-blue-400 px-3.5 py-2 rounded-lg transition-colors"
-                  >
-                    <span>Sign In</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5 text-slate-500">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </button>
+                <Link
+                  to="/patient/login"
+                  className="inline-flex items-center text-sm font-medium text-slate-700 hover:text-blue-600 border border-slate-300 hover:border-blue-400 px-3.5 py-2 rounded-lg transition-colors"
+                >
+                  Sign In
+                </Link>
 
-                  {loginMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in-95">
-                      <div className="px-3 py-1.5 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Patient Sign In
-                      </div>
-                      <Link
-                        to="/patient/login"
-                        onClick={() => setLoginMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                        <span>Patient Portal Sign In</span>
-                      </Link>
-                      <Link
-                        to="/patient/register"
-                        onClick={() => setLoginMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-blue-300"></span>
-                        <span>New Patient? Register here</span>
-                      </Link>
-                    </div>
-                  )}
-                </div>
-
-                {/* Register Dropdown */}
-                <div className="relative" ref={registerRef}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRegisterMenuOpen((prev) => !prev);
-                      setLoginMenuOpen(false);
-                    }}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-sm shadow-blue-200 transition-all"
-                  >
-                    <span>Register</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5 text-blue-200">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-                  </button>
-
-                  {registerMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-50">
-                      <div className="px-3 py-1.5 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                        Patient Registration
-                      </div>
-                      <Link
-                        to="/patient/register"
-                        onClick={() => setRegisterMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                        <span>Register as Patient</span>
-                      </Link>
-                      <Link
-                        to="/patient/login"
-                        onClick={() => setRegisterMenuOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-700"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-blue-300"></span>
-                        <span>Already registered? Sign In</span>
-                      </Link>
-                    </div>
-                  )}
-                </div>
+                <Link
+                  to="/patient/register"
+                  className="inline-flex items-center text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg shadow-sm shadow-blue-200 transition-all"
+                >
+                  Register
+                </Link>
               </>
             )}
           </div>
@@ -257,12 +197,32 @@ function Header() {
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                  />
                 </svg>
               )}
             </button>
@@ -301,7 +261,8 @@ function Header() {
                 to="/find-doctor"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-between transition-colors ${
-                  location.pathname.startsWith("/find-doctor") || location.pathname.startsWith("/doctors")
+                  location.pathname.startsWith("/find-doctor") ||
+                  location.pathname.startsWith("/doctors")
                     ? "text-blue-600 bg-blue-50 font-semibold"
                     : "text-slate-700 hover:bg-slate-50"
                 }`}
@@ -324,7 +285,11 @@ function Header() {
               {user ? (
                 <div className="space-y-2">
                   <div className="px-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-600">
-                    Logged in as <strong className="text-slate-900">{user.name || user.email}</strong> ({user.role})
+                    Logged in as{" "}
+                    <strong className="text-slate-900">
+                      {user.name || user.email}
+                    </strong>{" "}
+                    ({user.role})
                   </div>
                   <Link
                     to={getPortalRoute()}
